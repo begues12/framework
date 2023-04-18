@@ -20,7 +20,7 @@ use Engine\Utils\HTML\Input;
 // URL to projects folder
 $url = "";
 if (isset($_POST['ProjectPath'])){
-    $url = $_POST['ProjectPath']."/";
+    $url = $Config->get('ROOT_PROJECTS').$_POST['ProjectPath']."/";
 }
 
 $Div_nav = new Div();
@@ -41,6 +41,7 @@ $Undo_Button->AddAttribute(
     "Url", 
     $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectFiles"
 );
+
 $Undo_Button->AddAttribute("ProjectPath", implode("/", $Undo_url));
 
 $I_Undo = new I();

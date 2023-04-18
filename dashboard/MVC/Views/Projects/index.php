@@ -48,7 +48,7 @@ foreach($Projects as $Project){
     $Link_div->class = "col-sm-12";
 
     $Project_link = new A();
-    $Project_link->href = $Config->get("URL_DASHBOARD")."?Ctrl=Editor&Project=".$Project;
+    $Project_link->href = $Config->get("URL_EDITOR")."&Project=".$Project;
 
     $DivProject = new Div();
     $DivProject->class = "project row border border m-2 p-2";

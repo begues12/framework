@@ -4,7 +4,7 @@
 
 $Projects = [];
 
-$Projects_dir = scandir($Config->get('ROOT_PROJECT'));
+$Projects_dir = scandir($Config->get('ROOT_PROJECTS'));
 
 foreach($Projects_dir as $Project){
 

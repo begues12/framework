@@ -118,10 +118,9 @@ $Sidebar->AddElement($Button_Files);
 $Button_Objects = new Button();
 $Button_Objects->class = "btn p-1";
 $Button_Objects->id = "Sidebar_Objects";
-$Button_Objects->AddAttribute("title", "Objects");
-$Button_Objects->AddAttribute("Ctrl", "index");
+$Button_Objects->AddAttribute("title", "ProjectObjects");
+$Button_Objects->AddAttribute("Url", $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectObjects");
 $Button_Objects->AddAttribute("ProjectName", $ProjectName);
-$Button_Objects->AddAttribute("ProjectPath", $Config->get('URL_PROJECTS').$ProjectName);
 
 $Icono_sidebar = new I();
 $Icono_sidebar->class = "material-icons hover";
@@ -135,7 +134,7 @@ $Button_config = new Button();
 $Button_config->class = "btn p-1";
 $Button_config->id = "Sidebar_Config";
 $Button_config->AddAttribute("title", "Configurations");
-$Button_config->AddAttribute("Ctrl", "index");
+$Button_config->AddAttribute("Url", $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectConfig");
 $Button_config->AddAttribute("ProjectName", $ProjectName);
 
 $Icono_sidebar = new I();
@@ -148,7 +147,7 @@ $Sidebar->AddElement($Button_config);
 $Editor->Add($Sidebar);
 
 $PageView_IFrame = new IFrame();
-$PageView_IFrame->class = "container-fluid col-8 m-4 border border-dark";
+$PageView_IFrame->class = "container-fluid col-10 m-4 border border-dark PageView";
 $PageView_IFrame->id = "PageView_IFrame";
 $PageView_IFrame->AddAttribute("Url", $Config->get('URL_PROJECTS').$_GET['Project']."/index.php");
 $PageView_IFrame->AddAttribute("Ctrl", 'Menu');
@@ -163,7 +162,7 @@ $PageView_IFrame->css = [
 $Editor->Add($PageView_IFrame);
 
 $PageView_ProjectFiles = new Div();
-$PageView_ProjectFiles->class = "container-fluid col-8 m-2 p-0 border border-dark";
+$PageView_ProjectFiles->class = "container-fluid col-10 m-2 p-0 border border-dark PageView";
 $PageView_ProjectFiles->id = "PageView_ProjectFiles";
 $PageView_ProjectFiles->AddAttribute("Url", $Config->get('URL_IMPORT_MVC').$_GET['Project']."/index.php");
 $PageView_ProjectFiles->AddAttribute("ProjectName", $_GET['Project']);
@@ -176,6 +175,30 @@ $PageView_ProjectFiles->css = [
 ];
 $Editor->Add($PageView_ProjectFiles);
 
+$PageView_ProjectObjects = new Div();
+$PageView_ProjectObjects->class = "container-fluid col-10 m-2 p-0 border border-dark PageView";
+$PageView_ProjectObjects->id = "PageView_ProjectObjects";
+$PageView_ProjectObjects->css = [
+    'height' => '82vh',
+    'right' => '0',
+    'top' => '13vh',
+    'overflow' => 'auto',
+    'display' => 'none'
+];
+$Editor->Add($PageView_ProjectObjects);
+
+$PageView_ProjectConfig = new Div();
+$PageView_ProjectConfig->class = "container-fluid col-10 m-2 p-0 border border-dark PageView";
+$PageView_ProjectConfig->id = "PageView_ProjectConfig";
+$PageView_ProjectConfig->css = [
+    'height' => '82vh',
+    'right' => '0',
+    'top' => '13vh',
+    'overflow' => 'auto',
+    'display' => 'none'
+];
+$Editor->Add($PageView_ProjectConfig);
+
 $Sidebar_Attributes = new Sidebar();
 $Sidebar_Attributes->class = "col-2 p-0 border border-dark";
 $Sidebar_Attributes->id = "Sidebar_Attributes";
@@ -186,6 +209,7 @@ $Sidebar_Attributes->css = [
     'top' => '17vh',
     'overflow' => 'auto'
 ];
+
 
 // Get settings from the database
 $Settings = new Div();
@@ -208,7 +232,7 @@ $Settings->Add($Input_placeholder);
 
 $Sidebar_Attributes->AddElement($Settings);
 
-$Editor->Add($Sidebar_Attributes);
+// $Editor->Add($Sidebar_Attributes);
 
 $Content->Add($Editor);
 

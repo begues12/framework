@@ -1,0 +1,16 @@
+<Object Name="Transaction" Type="Transaction" Description="Transaction" />
+    <DataBase Name="Transaction">
+        <Table Name="Transaction" Description="Transaction">
+            <Fields>
+                <Field Name="Id" Type="Integer" Description="Id" PrimaryKey="True" />
+                <Field Name="Date" Type="DateTime" Description="Date" />
+                <Field Name="Money" Type="Integer" Description="Money" />
+                <Field Name="Count" Type="Integer" Description="Count" />
+                <Field Name="id_user_emisor" Type="Integer" Description="id_user" ForeignKey="User.Id" />
+                <Field Name="id_user_receptor" Type="Integer" Description="id_user" ForeignKey="User.Id" />
+                <Field Name="id_product" Type="Integer" Description="id_product" ForeignKey="Product.Id" />
+                <Field Name="id_shopcart" Type="Integer" Description="id_shopcart" ForeignKey="ShopCart.Id" />
+            </Fields>
+        </Table>
+    </DataBase>
+</Object>

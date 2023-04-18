@@ -41,4 +41,23 @@ if(file_exists( $Config->get('ROOT_DASHBOARD').$path_file) && file_exists( $Conf
     include_once $path_file;
 }
 
+if(!file_exists( $Config->get('ROOT_DASHBOARD').$path_controller)){
+    echo "<div style='margin: 0 auto; background-color: #f5f5f5; padding: 20px; border: 1px solid #e3e3e3; border-radius: 4px;'>";
+    echo "<h3>404</h3>";
+    echo "<h5>Controller not found</h5>";
+    echo "<label>".$Config->get('ROOT_DASHBOARD').$path_controller."</label>";
+    echo "</div>";
+}
+
+if (!file_exists($Config->get('ROOT_DASHBOARD').$path_file)) {
+    echo "<div style='margin: 0 auto; background-color: #f5f5f5; padding: 20px; border: 1px solid #e3e3e3; border-radius: 4px;'>";
+    echo "<h3>404</h3>";
+    echo "<h5>View not found</h5>";
+    echo "<label>".$Config->get('ROOT_DASHBOARD').$path_file."</label>";
+    echo "</div>";
+
+}
+
+
+
 ?>

@@ -1,0 +1,12 @@
+<Object Name="ShopCart" Type="ShopCart" Description="ShopCart" />
+    <DataBase Name="ShopCart">
+        <Table Name="ShopCart" Description="ShopCart">
+            <Fields>
+                <Field Name="Age" Type="Integer" Description="Age" />
+                <Field Name="Id" Type="Integer" Description="Id" PrimaryKey="True" />
+                <Field Name="Date" Type="DateTime" Description="Date" />
+                <Field Name="id_user" Type="Integer" Description="id_user" ForeignKey="User.Id" />
+            </Fields>
+        </Table>
+    </DataBase>
+</Object>
