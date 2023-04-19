@@ -31,12 +31,15 @@ use Engine\Utils\HTML\Tr;
 use Engine\Utils\HTML\Td;
 use Engine\Utils\HTML\Nav;
 
+$Label_XML_Path = new Label();
+$Label_XML_Path->class = "form-control-label font-weight-bold";
+$Label_XML_Path->text = "XML Path: ".$XML_PATH;
 
 $Input_Name = new Input();
 $Input_Name->type = "text";
 $Input_Name->class = "form-control d-block";
 $Input_Name->name = "Object_Name";
-$Input_Name->value = $array['Name'];
+$Input_Name->value = $xml->Name;
 
 $Label_Name = new Label();
 $Label_Name->class = "form-control-label font-weight-bold";
@@ -51,7 +54,7 @@ $Input_Table = new Input();
 $Input_Table->type = "text";
 $Input_Table->class = "form-control d-block";
 $Input_Table->name = "Object_Table";
-$Input_Table->value = $array['Table'];
+$Input_Table->value = $xml->Table;
 
 $Label_Table = new Label();
 $Label_Table->class = "form-control-label font-weight-bold";
@@ -94,14 +97,15 @@ $Table_Field_header->class = "form-group col-md-12 table table-bordered table-st
 
 $Tr_Field_header = new Tr();
 
-$All_Fields = ["id", "Name", "Type", "Length", "Default", "AI", "Required", "Unique", "Null", "Actions" ];
+$All_Fields = ["id", "Name", "Type", "Length", "AI", "Required", "Default", "PK", "Unique", "Null", "Actions" ];
 
 foreach($All_Fields as $Field){
 
     $Td_Field_header = new Td();
+    $Td_Field_header->class = "text-center";
 
     $Label_Field_header = new Label();
-    $Label_Field_header->class = "form-control-label d-inline font-weight-bold";
+    $Label_Field_header->class = "font-weight-bold";
     $Label_Field_header->text = $Field;
 
     $Td_Field_header->Add($Label_Field_header);
@@ -111,43 +115,54 @@ foreach($All_Fields as $Field){
 
 $Table_Field_header->Add($Tr_Field_header);
 
-foreach( $array['Fields']['Field'] as $Field){
+foreach( $xml->Fields->Field as $Field){
+
+    $Field_Id = $Field->attributes()->id;
 
     $Tr_Field = new Tr();
+    $Tr_Field->id = "Field_".$Field_Id;
+
+    /* ID */
 
     $Td_Field_Id = new Td();
+    $Td_Field_Id->class = "justify-content-center";
 
     $Label_Field_Id = new Label();
-    $Label_Field_Id->class = "form-control-label d-inline";
-    $Label_Field_Id->text = '1';
-    // $Config->pre_array($Field);
+    $Label_Field_Id->class = "form-control-label text-right";
+    $Label_Field_Id->text = $Field_Id;
 
     $Td_Field_Id->Add($Label_Field_Id);
 
+    /* Name */
+
     $Td_Field_Name = new Td();
+    $Td_Field_Name->class = "justify-content-center";
 
     $Input_Field = new Input();
     $Input_Field->type = "text";
-    $Input_Field->class = "form-control d-inline";
-    $Input_Field->name = "Field[]";
+    $Input_Field->class = "form-control ml-auto mr-auto";
+    $Input_Field->name = "Field_".$Field_Id."_Name";
 
-    if (isset($Field['Name'])){
-        $Input_Field->value = $Field['Name'];
+    if (isset($Field->Name)){
+        $Input_Field->value = $Field->Name;
     }
 
     $Input_Field->placeholder = "Field Name";
 
     $Td_Field_Name->Add($Input_Field);
 
+    /* Type */
+
     $Td_Field_Type = new Td();
+    $Td_Field_Type->class = "justify-content-center";
 
     $Select_Type = new Select();
     $Select_Type->type = "text";
-    $Select_Type->class = "form-control col-md";
-    $Select_Type->name = "Type[]";
+    $Select_Type->class = "form-control ml-auto mr-auto";
+    $Select_Type->name = "Field_".$Field_Id."_Type";
 
-    if (isset($Field['Type'])){
-        $Select_Type->value = $Field['Type'];
+    if (isset($Field->Type)){
+        $Select_Type->value = $Field->Type;
     }
 
     $AllTypes = [
@@ -189,9 +204,9 @@ foreach( $array['Fields']['Field'] as $Field){
         $Option = new Option();
         $Option->value = $Type;
         $Option->text = $Type;
-        if (isset($Field['Type'])){
+        if (isset($Field->Type)){
 
-            if ($Type == $Field['Type']){
+            if ($Type == $Field->Type){
                 $Option->selected = "selected";
             }
         }
@@ -200,101 +215,139 @@ foreach( $array['Fields']['Field'] as $Field){
 
     $Td_Field_Type->Add($Select_Type);
 
+    /* Length */
+
     $Td_Field_Length = new Td();
+    $Td_Field_Length->class = "justify-content-center";
     
     $Input_Length = new Input();
     $Input_Length->type = "text";
-    $Input_Length->class = "form-control d-block";
-    $Input_Length->name = "Length[]";
+    $Input_Length->class = "form-control ml-auto mr-auto";
+    $Input_Length->name = "Field_".$Field_Id."_Length";
 
-    if (isset($Field['Length'])){
-        $Input_Length->value = $Field['Length'];
+    if (isset($Field->Length)){
+        $Input_Length->value = $Field->Length;
     }
      
     $Input_Length->placeholder = "Length";
 
     $Td_Field_Length->Add($Input_Length);
 
-    $Td_Field_Null = new Td();
+    /* AI */
+
+    $Td_Field_AI = new Td();
+    $Td_Field_AI->class = "justify-content-center";
     
+    $Checkbox_AI = new Input();
+    $Checkbox_AI->type = "checkbox";
+    $Checkbox_AI->class = "form-control ml-auto mr-auto";
+    $Checkbox_AI->name = "Field_".$Field_Id."_AI";
+    $Checkbox_AI->value = "1";
+    $Checkbox_AI->css = [ "width" => "15px", "height" => "15px" ];
+
+    if (isset($Field->AutoIncrement)){
+        $Checkbox_AI->checked = $Field->AutoIncrement == "1" ? true : false;
+    }
+
+    $Td_Field_AI->Add($Checkbox_AI);
+
+    /* Required */
+
+    $Td_Field_Requiered = new Td();
+    $Td_Field_Requiered->class = "justify-content-center";
+
     $Checkbox_Requiered = new Input();
     $Checkbox_Requiered->type = "checkbox";
-    $Checkbox_Requiered->class = "form-control d-block";
-    $Checkbox_Requiered->name = "Required[]";
+    $Checkbox_Requiered->class = "form-control ml-auto mr-auto";
+    $Checkbox_Requiered->name = "Field_".$Field_Id."_Required";
     $Checkbox_Requiered->value = "1";
     $Checkbox_Requiered->css = [ "width" => "15px", "height" => "15px" ];
-    $Checkbox_Requiered->checked = $Field['Required'] == "1" ? true : false;
+    if (isset($Field->Required)) {
+        $Checkbox_Requiered->checked = $Field->Required == "1" ? true : false;
+    }
 
-    $Td_Field_Null->Add($Checkbox_Requiered);
+    $Td_Field_Requiered->Add($Checkbox_Requiered);
 
-    $Td_Field_Key = new Td();
+    /* Default */
 
-    $Select_Key = new Select();
+    $Td_Field_Default = new Td();
+    $Td_Field_Default->class = "justify-content-center";
 
     $Input_Default = new Input();
     $Input_Default->type = "text";
-    $Input_Default->class = "form-control d-block";
-    $Input_Default->name = "Default[]";
-    $Input_Default->value = $Field['Default'];
+    $Input_Default->class = "form-control ml-auto mr-auto";
+    $Input_Default->name = "Field_".$Field_Id."_Default";
+    if (isset($Field->Default)) {
+        $Input_Default->value = $Field->Default;
+    }
     $Input_Default->placeholder = "Default";
 
-    $Td_Field_Key->Add($Input_Default);
+    $Td_Field_Default->Add($Input_Default);
 
-    $Td_Field_AutoIncrement = new Td();
-
-    $Checkbox_AutoIncrement = new Input();
-    $Checkbox_AutoIncrement->type = "checkbox";
-    $Checkbox_AutoIncrement->class = "form-control d-block";
-    $Checkbox_AutoIncrement->name = "AutoIncrement[]";
-    $Checkbox_AutoIncrement->css = [ "width" => "15px", "height" => "15px" ];
-    $Checkbox_AutoIncrement->value = "1";
-    $Checkbox_AutoIncrement->checked = $Field['AutoIncrement'] == "1" ? true : false;
-
-    $Td_Field_AutoIncrement->Add($Checkbox_AutoIncrement);
+    /* Primary Key */
 
     $Td_Field_PrimaryKey = new Td();
+    $Td_Field_PrimaryKey->class = "justify-content-center";
 
     $Checkbox_PrimaryKey = new Input();
-    $Checkbox_PrimaryKey->type = "checkbox";
-    $Checkbox_PrimaryKey->class = "form-control d-block";
-    $Checkbox_PrimaryKey->name = "PrimaryKey[]";
+    $Checkbox_PrimaryKey->type = "radio";
+    $Checkbox_PrimaryKey->class = "form-control ml-auto mr-auto";
+    $Checkbox_PrimaryKey->name = "Field_".$Field_Id."_PrimaryKey";
     $Checkbox_PrimaryKey->value = "1";
     $Checkbox_PrimaryKey->css = [ "width" => "15px", "height" => "15px" ];
 
-    if (isset($Field['PrimaryKey'])){
-        $Checkbox_PrimaryKey->checked = $Field['PrimaryKey'] == "1" ? true : false;
+    if (isset($Field->PrimaryKey)){
+        $Checkbox_PrimaryKey->checked = $Field->PrimaryKey == "1" ? true : false;
     }
     $Td_Field_PrimaryKey->Add($Checkbox_PrimaryKey);
 
+    /* Unique */
+
     $Td_Field_Unique = new Td();
+    $Td_Field_Unique->class = "justify-content-center";
 
     $Checkbox_Unique = new Input();
     $Checkbox_Unique->type = "checkbox";
-    $Checkbox_Unique->class = "form-control d-block";
-    $Checkbox_Unique->name = "Unique[]";
+    $Checkbox_Unique->class = "form-control ml-auto mr-auto";
+    $Checkbox_Unique->name = "Field_".$Field_Id."_Unique";
     $Checkbox_Unique->value = "1";
     $Checkbox_Unique->css = [ "width" => "15px", "height" => "15px" ];
-    $Checkbox_Unique->checked = $Field['Unique'] == "1" ? true : false;
+
+    if (isset($Field->Unique)) {
+        $Checkbox_Unique->checked = $Field->Unique == "1" ? true : false;
+    }
 
     $Td_Field_Unique->Add($Checkbox_Unique);
 
+    /* Null */
+
     $Td_Field_Null = new Td();
+    $Td_Field_Null->class = "justify-content-center";
 
     $Checkbox_Null = new Input();
     $Checkbox_Null->type = "checkbox";
-    $Checkbox_Null->class = "form-control d-block";
-    $Checkbox_Null->name = "Null[]";
+    $Checkbox_Null->class = "form-control ml-auto mr-auto";
+    $Checkbox_Null->name = "Field_".$Field_Id."_Null";
     $Checkbox_Null->value = "1";
     $Checkbox_Null->css = [ "width" => "15px", "height" => "15px" ];
-    $Checkbox_Null->checked = $Field['Null'] == "1" ? true : false;
+    if (isset($Field->Null)) {
+        $Checkbox_Null->checked = $Field->Null == "1" ? true : false;
+    }
 
     $Td_Field_Null->Add($Checkbox_Null);
 
+    /* Delete */
+
     $Td_Field_Delete = new Td();
+    $Td_Field_Delete->class = "text-center";
 
     $Button_Delete = new Button();
-    $Button_Delete->class = "btn btn-danger";
-    $Button_Delete->text = "Delete";
+    $Button_Delete->class = "btn btn-danger material-icons";
+    $Button_Delete->text = "delete";
+    $Button_Delete->AddAttribute("URL", $Config->get("URL_IMPORT_MVC"));
+    $Button_Delete->AddAttribute("XML_File", $XML_PATH);
+    $Button_Delete->AddAttribute("Id_Field", $Field_Id);
+    $Button_Delete->AddAttribute("Config", $Config->get("CONFIG"));
     $Button_Delete->onclick = "DeleteField(this)";
 
     $Td_Field_Delete->Add($Button_Delete);
@@ -303,13 +356,14 @@ foreach( $array['Fields']['Field'] as $Field){
     $Tr_Field->Add($Td_Field_Name);
     $Tr_Field->Add($Td_Field_Type);
     $Tr_Field->Add($Td_Field_Length);
-    $Tr_Field->Add($Td_Field_Null);
-    $Tr_Field->Add($Td_Field_Key);
-    $Tr_Field->Add($Td_Field_AutoIncrement);
+    $Tr_Field->Add($Td_Field_AI);
+    $Tr_Field->Add($Td_Field_Requiered);
+    $Tr_Field->Add($Td_Field_Default);
     $Tr_Field->Add($Td_Field_PrimaryKey);
     $Tr_Field->Add($Td_Field_Unique);
+    $Tr_Field->Add($Td_Field_Null);
     $Tr_Field->Add($Td_Field_Delete);
-
+    
     $Table_Field_header->Add($Tr_Field);
 
 }
@@ -328,11 +382,12 @@ $Nav_Relation_tools->class = "col-1";
 $Button_Add_Relation = new Button();
 
 $Button_Add_Relation->class = "btn btn-primary p-0 m-0";
+$Button_Add_Relation->css = [ "width" => "25px", "height" => "25px" ];
 $Button_Add_Relation->onclick = "AddRelation()";
-
 
 $Icon_Add_Relation = new I();
 $Icon_Add_Relation->class = "material-icons";
+$Icon_Add_Relation->css = [ "font-size" => "20px", "margin" => "auto"];
 $Icon_Add_Relation->text = "add";
 
 $Button_Add_Relation->Add($Icon_Add_Relation);
@@ -346,34 +401,22 @@ $Table_Relation_header->class = "table table-bordered table-hover table-sm";
 
 $Tr_Relation = new Tr();
 
-$Th_Relation_Id = new Td();
-$Th_Relation_Id->text = "Id";
+$Relations_Header = [ "Id", "Name", "Type", "Table", "Field"];
 
-$Th_Relation_Name = new Td();
-$Th_Relation_Name->text = "Name";
+foreach ($Relations_Header as $Header){
+    $Th_Relation = new Td();
+    $Th_Relation->class = "text-center font-weight-bold";
 
-$Th_Relation_Type = new Td();
-$Th_Relation_Type->text = "Type";
-
-$Th_Relation_Table = new Td();
-$Th_Relation_Table->text = "Table";
-
-$Th_Relation_Field = new Td();
-$Th_Relation_Field->text = "Field";
-
-$Tr_Relation->Add($Th_Relation_Id);
-
-$Tr_Relation->Add($Th_Relation_Name);
-
-$Tr_Relation->Add($Th_Relation_Type);
-
-$Tr_Relation->Add($Th_Relation_Table);
-
-$Tr_Relation->Add($Th_Relation_Field);
+    $Th_Relation->text = $Header;
+    $Tr_Relation->Add($Th_Relation);
+}
 
 $Table_Relation_header->Add($Tr_Relation);
 
-foreach( $array['Relations']['Relation'] as $Relation){
+foreach( $xml->Relations->Relation as $Relation ){
+
+
+    $Relation_Id = $Relation->attributes()->id;
 
     $Tr_Relation = new Tr();
 
@@ -382,13 +425,12 @@ foreach( $array['Relations']['Relation'] as $Relation){
     */
 
     $Td_Relation_Id = new Td();
+    $Td_Relation_Id->class = "text-center font-weight-bold";
 
     $Label_Relation_Id = new Label();
-
-    if ( isset($Relation['Id']) ){
-        $Label_Relation_Id->text = $Relation['Id'];
-    }
-
+    $Label_Relation_Id->class = "ml-auto mr-auto";
+    $Label_Relation_Id->text = $Relation_Id;
+  
     $Td_Relation_Id->Add($Label_Relation_Id);
 
     /*
@@ -401,8 +443,8 @@ foreach( $array['Relations']['Relation'] as $Relation){
 
     $Input_Relation_Name->type = "text";
     $Input_Relation_Name->class = "form-control d-block";
-    $Input_Relation_Name->name = "Relation_Name[]";
-    $Input_Relation_Name->value = $Relation['Field'];
+    $Input_Relation_Name->name = "Relation_".$Relation_Id."_Name";
+    $Input_Relation_Name->value = $Relation->Name;
     $Input_Relation_Name->placeholder = "Relation Name";
 
     $Td_Relation_Name->Add($Input_Relation_Name);
@@ -417,7 +459,7 @@ foreach( $array['Relations']['Relation'] as $Relation){
     
     $Select_Relation_Type->class = "form-control d-block";
 
-    $Select_Relation_Type->name = "Relation_Type[]";
+    $Select_Relation_Type->name = "Relation_".$Relation_Id."_Type";
 
     $Relation_types = [
         "One to One" => "OneToOne",
@@ -431,7 +473,7 @@ foreach( $array['Relations']['Relation'] as $Relation){
         $Option_Relation_Type = new Option();
         $Option_Relation_Type->text = $Relation_type;
         $Option_Relation_Type->value = $Relation_type_value;
-        $Option_Relation_Type->selected = $Relation['Type'] == $Relation_type_value ? true : false;
+        $Option_Relation_Type->selected = $Relation->Type == $Relation_type_value ? true : false;
 
         $Select_Relation_Type->Add($Option_Relation_Type);
 
@@ -448,8 +490,8 @@ foreach( $array['Relations']['Relation'] as $Relation){
     $Input_Relation_Table = new Input();
     $Input_Relation_Table->type = "text";
     $Input_Relation_Table->class = "form-control d-block";
-    $Input_Relation_Table->name = "Relation_Table[]";
-    $Input_Relation_Table->value = $Relation['FKTable'];
+    $Input_Relation_Table->name = "Relation_".$Relation_Id."_Table";
+    $Input_Relation_Table->value = $Relation->FKTable;
     $Input_Relation_Table->placeholder = "Relation Table";
 
     $Td_Relation_Table->Add($Input_Relation_Table);
@@ -466,9 +508,9 @@ foreach( $array['Relations']['Relation'] as $Relation){
 
     $Input_Relation_Field->class = "form-control d-block";
 
-    $Input_Relation_Field->name = "Relation_Field[]";
+    $Input_Relation_Field->name = "Relation_".$Relation_Id."_Field";
 
-    $Input_Relation_Field->value = $Relation['FKField'];
+    $Input_Relation_Field->value = $Relation->FKField;
 
     $Input_Relation_Field->placeholder = "Relation Field";
 
@@ -509,6 +551,7 @@ $Form->action = "";
 $Form->method = "post";
 $Form->class = "form-horizontal";
 
+$Form->Add($Label_XML_Path);
 $Form->Add($Div_Name);
 $Form->Add($Div_Table);
 $Form->Add($Table_Field_header);

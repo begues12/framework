@@ -124,16 +124,32 @@ function EditObject(FileBox){
     });
 }
 
-function NoDisplayPageView(){
+function NoDisplayPageView(Except = null){
     ///Display None all Elements in PageView class
     $(".PageView").each(function () {
-        $(this).css('display', 'none');
+        if (Except == null || Except.attr('id') == $(this).attr('id')){
+            $(this).css('display', 'none');
+        }
     });
 }
 
 function DeleteField(Element){
 
-    alert("Delete");
+    $.ajax({
+        // Get attributes url
+        url: Element.getAttribute('Url') + "?Ctrl=Editor/ProjectObjects&Action=DeleteField",
+        type: 'POST',
+        data : { 
+            'XML_FILE' : Element.getAttribute('XML_FILE'),
+            'IdField' : Element.getAttribute('Id_Field'),
+        },
+        success: function (data) {
+            NoDisplayPageView($('#PageView_ProjectObjects'));
+
+            var TrDelete = $('#Field_'+Element.getAttribute('Id_Field'));
+            TrDelete.remove();
+        }
+    });
 
 }
 
