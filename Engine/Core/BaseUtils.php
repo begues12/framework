@@ -246,7 +246,7 @@ class BaseUtils{
         }
 
         if($this->selected){
-            $this->return .= " selected";
+            $this->return .= " selected = selected";
         }
 
         if($this->multiple){

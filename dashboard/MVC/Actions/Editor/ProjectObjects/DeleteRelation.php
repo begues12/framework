@@ -1,17 +1,17 @@
 <?php
 
 $XML_PATH = "";
-$ID_FIELD = "";
+$Id_Relation = "";
 
 if (isset($_POST['XML_FILE'])) {
     $XML_PATH = $_POST['XML_FILE'];
 }
 
-if (isset($_POST['IdField'])) {
-    $ID_FIELD = $_POST['IdField'];
+if (isset($_POST['IdRelation'])) {
+    $Id_Relation = $_POST['IdRelation'];
 }
 echo $XML_PATH;
-if ($XML_PATH != "" && $ID_FIELD != "") {
+if ($XML_PATH != "" && $Id_Relation != "") {
 
     $xml = new SimpleXMLElement($XML_PATH, 0, true);
     
@@ -19,7 +19,7 @@ if ($XML_PATH != "" && $ID_FIELD != "") {
         echo "No se pudo cargar el archivo XML";
     } else {
         
-        foreach ($xml->xpath("//Field[@id='$ID_FIELD']") as $field) {
+        foreach ($xml->xpath("//Relation[@id='$Id_Relation']") as $field) {
             unset($field[0]);
         }
 

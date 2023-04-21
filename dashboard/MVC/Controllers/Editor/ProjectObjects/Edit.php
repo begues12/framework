@@ -9,15 +9,15 @@ $Config = new Config();
 
 // $xml = new SimpleXMLElement($Config->get('ROOT_BASEOBJECT'), 0, true);
 
-$XML_PATH = "";
+$XML_FILE = "";
 
 if (isset($_POST['ObjectPath'])) {
-    $XML_PATH = $_POST['ObjectPath'];
+    $XML_FILE = $_POST['ObjectPath'];
 }else{
     die("Error: No path to xml file");
 }
 
-if( $XML_PATH != "" && file_exists($XML_PATH) ){
+if( $XML_FILE != "" && file_exists($XML_FILE) ){
     // XML file open
     $xml = simplexml_load_file($_POST['ObjectPath']);
     // XML file to array

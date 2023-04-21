@@ -90,6 +90,7 @@ foreach (scandir($url) as $key => $file) {
             $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectObjects&Do=Edit"
         );
         $Button->AddAttribute("ObjectPath", $url.$file);
+        $Button->AddAttribute("ProjectName", $_POST['ProjectName']);
 
         $Button->css = [
             'width' => '100%',

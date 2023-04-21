@@ -33,7 +33,7 @@ use Engine\Utils\HTML\Nav;
 
 $Label_XML_Path = new Label();
 $Label_XML_Path->class = "form-control-label font-weight-bold";
-$Label_XML_Path->text = "XML Path: ".$XML_PATH;
+$Label_XML_Path->text = "XML Path: ".$XML_FILE;
 
 $Input_Name = new Input();
 $Input_Name->type = "text";
@@ -69,31 +69,23 @@ $Div_Fields = new Div();
 $Div_Fields->class = "form-group row";
 
 $Label_Fields = new Label();
-$Label_Fields->class = "form-control-label d-block";
+$Label_Fields->class = "form-control-label d-block h3 font-weight-bold";
 $Label_Fields->text = "Fields";
 
 $Div_Fields->Add($Label_Fields);
 
 $Button_AddField = new Button();
-$Button_AddField->class = "btn btn-primary";
-$Button_AddField->css = ["width" => "30px", "height" => "30px" ];
+$Button_AddField->class = "btn btn-primary ml-auto";
 $Button_AddField->onclick = "AddField(this);";
+$Button_AddField->text = "Add Field";
+$Button_AddField->AddAttribute("URL", $Config->get("URL_IMPORT_MVC"));
+$Button_AddField->AddAttribute("XML_File", $XML_FILE);
 
-$I_Add = new I();
-$I_Add->class = "material-icons m-0 p-0"; 
-$I_Add->css = [ "color" => "white", "font-size" => "18px" ];
-$I_Add->text = "add";
-
-$Button_AddField->Add($I_Add);
-
-$Div_nav = new Div();
-$Div_nav->class = "col-md-12";
-$Div_nav->Add($Button_AddField);
-
-$Div_Fields->Add($Div_nav);
+$Div_Fields->Add($Button_AddField);
 
 $Table_Field_header = new Table();
 $Table_Field_header->class = "form-group col-md-12 table table-bordered table-striped table-hover table-sm";
+$Table_Field_header->id = "Table_Fields";
 
 $Tr_Field_header = new Tr();
 
@@ -120,7 +112,7 @@ foreach( $xml->Fields->Field as $Field){
     $Field_Id = $Field->attributes()->id;
 
     $Tr_Field = new Tr();
-    $Tr_Field->id = "Field_".$Field_Id;
+    $Tr_Field->id = "Fields_Field_".$Field_Id;
 
     /* ID */
 
@@ -141,7 +133,7 @@ foreach( $xml->Fields->Field as $Field){
     $Input_Field = new Input();
     $Input_Field->type = "text";
     $Input_Field->class = "form-control ml-auto mr-auto";
-    $Input_Field->name = "Field_".$Field_Id."_Name";
+    $Input_Field->name = "Fields_Field_".$Field_Id."_Name";
 
     if (isset($Field->Name)){
         $Input_Field->value = $Field->Name;
@@ -159,7 +151,7 @@ foreach( $xml->Fields->Field as $Field){
     $Select_Type = new Select();
     $Select_Type->type = "text";
     $Select_Type->class = "form-control ml-auto mr-auto";
-    $Select_Type->name = "Field_".$Field_Id."_Type";
+    $Select_Type->name = "Fields_Field_".$Field_Id."_Type";
 
     if (isset($Field->Type)){
         $Select_Type->value = $Field->Type;
@@ -223,7 +215,7 @@ foreach( $xml->Fields->Field as $Field){
     $Input_Length = new Input();
     $Input_Length->type = "text";
     $Input_Length->class = "form-control ml-auto mr-auto";
-    $Input_Length->name = "Field_".$Field_Id."_Length";
+    $Input_Length->name = "Fields_Field_".$Field_Id."_Length";
 
     if (isset($Field->Length)){
         $Input_Length->value = $Field->Length;
@@ -241,7 +233,7 @@ foreach( $xml->Fields->Field as $Field){
     $Checkbox_AI = new Input();
     $Checkbox_AI->type = "checkbox";
     $Checkbox_AI->class = "form-control ml-auto mr-auto";
-    $Checkbox_AI->name = "Field_".$Field_Id."_AI";
+    $Checkbox_AI->name = "Fields_Field_".$Field_Id."_AutoIncrement";
     $Checkbox_AI->value = "1";
     $Checkbox_AI->css = [ "width" => "15px", "height" => "15px" ];
 
@@ -259,7 +251,7 @@ foreach( $xml->Fields->Field as $Field){
     $Checkbox_Requiered = new Input();
     $Checkbox_Requiered->type = "checkbox";
     $Checkbox_Requiered->class = "form-control ml-auto mr-auto";
-    $Checkbox_Requiered->name = "Field_".$Field_Id."_Required";
+    $Checkbox_Requiered->name = "Fields_Field_".$Field_Id."_Required";
     $Checkbox_Requiered->value = "1";
     $Checkbox_Requiered->css = [ "width" => "15px", "height" => "15px" ];
     if (isset($Field->Required)) {
@@ -276,7 +268,7 @@ foreach( $xml->Fields->Field as $Field){
     $Input_Default = new Input();
     $Input_Default->type = "text";
     $Input_Default->class = "form-control ml-auto mr-auto";
-    $Input_Default->name = "Field_".$Field_Id."_Default";
+    $Input_Default->name = "Fields_Field_".$Field_Id."_Default";
     if (isset($Field->Default)) {
         $Input_Default->value = $Field->Default;
     }
@@ -292,7 +284,7 @@ foreach( $xml->Fields->Field as $Field){
     $Checkbox_PrimaryKey = new Input();
     $Checkbox_PrimaryKey->type = "radio";
     $Checkbox_PrimaryKey->class = "form-control ml-auto mr-auto";
-    $Checkbox_PrimaryKey->name = "Field_".$Field_Id."_PrimaryKey";
+    $Checkbox_PrimaryKey->name = "Fields_Field_".$Field_Id."_PrimaryKey";
     $Checkbox_PrimaryKey->value = "1";
     $Checkbox_PrimaryKey->css = [ "width" => "15px", "height" => "15px" ];
 
@@ -309,7 +301,7 @@ foreach( $xml->Fields->Field as $Field){
     $Checkbox_Unique = new Input();
     $Checkbox_Unique->type = "checkbox";
     $Checkbox_Unique->class = "form-control ml-auto mr-auto";
-    $Checkbox_Unique->name = "Field_".$Field_Id."_Unique";
+    $Checkbox_Unique->name = "Fields_Field_".$Field_Id."_Unique";
     $Checkbox_Unique->value = "1";
     $Checkbox_Unique->css = [ "width" => "15px", "height" => "15px" ];
 
@@ -327,7 +319,7 @@ foreach( $xml->Fields->Field as $Field){
     $Checkbox_Null = new Input();
     $Checkbox_Null->type = "checkbox";
     $Checkbox_Null->class = "form-control ml-auto mr-auto";
-    $Checkbox_Null->name = "Field_".$Field_Id."_Null";
+    $Checkbox_Null->name = "Fields_Field_".$Field_Id."_Null";
     $Checkbox_Null->value = "1";
     $Checkbox_Null->css = [ "width" => "15px", "height" => "15px" ];
     if (isset($Field->Null)) {
@@ -345,9 +337,8 @@ foreach( $xml->Fields->Field as $Field){
     $Button_Delete->class = "btn btn-danger material-icons";
     $Button_Delete->text = "delete";
     $Button_Delete->AddAttribute("URL", $Config->get("URL_IMPORT_MVC"));
-    $Button_Delete->AddAttribute("XML_File", $XML_PATH);
+    $Button_Delete->AddAttribute("XML_FILE", $XML_FILE);
     $Button_Delete->AddAttribute("Id_Field", $Field_Id);
-    $Button_Delete->AddAttribute("Config", $Config->get("CONFIG"));
     $Button_Delete->onclick = "DeleteField(this)";
 
     $Td_Field_Delete->Add($Button_Delete);
@@ -376,6 +367,15 @@ foreach( $xml->Fields->Field as $Field){
 $Div_Nav = new Div();
 $Div_Nav->class = "d-flex flex-row-reverse m-2";
 
+$Nav_Relation = new Div();
+$Nav_Relation->class = "col-11";
+
+$Label_Relation = new Label();
+$Label_Relation->class = "form-control-label d-block h3 font-weight-bold";
+$Label_Relation->text = "Relations";
+
+$Nav_Relation->Add($Label_Relation);
+
 $Nav_Relation_tools = new Div();
 $Nav_Relation_tools->class = "col-1";
 
@@ -383,7 +383,10 @@ $Button_Add_Relation = new Button();
 
 $Button_Add_Relation->class = "btn btn-primary p-0 m-0";
 $Button_Add_Relation->css = [ "width" => "25px", "height" => "25px" ];
-$Button_Add_Relation->onclick = "AddRelation()";
+$Button_Add_Relation->onclick = "AddRelation(this)";
+$Button_Add_Relation->AddAttribute("URL", $Config->get("URL_IMPORT_MVC"));
+$Button_Add_Relation->AddAttribute("XML_FILE", $XML_FILE);
+$Button_Add_Relation->AddAttribute("ProjectName", $_POST["ProjectName"]);
 
 $Icon_Add_Relation = new I();
 $Icon_Add_Relation->class = "material-icons";
@@ -395,13 +398,15 @@ $Button_Add_Relation->Add($Icon_Add_Relation);
 $Nav_Relation_tools->Add($Button_Add_Relation);
 
 $Div_Nav->Add($Nav_Relation_tools);
+$Div_Nav->Add($Nav_Relation);
 
 $Table_Relation_header = new Table();
 $Table_Relation_header->class = "table table-bordered table-hover table-sm";
+$Table_Relation_header->id = "Table_Relations";
 
 $Tr_Relation = new Tr();
 
-$Relations_Header = [ "Id", "Name", "Type", "Table", "Field"];
+$Relations_Header = [ "Id", "Field", "Type", "FK Table", "FK Field", "Actions"];
 
 foreach ($Relations_Header as $Header){
     $Th_Relation = new Td();
@@ -419,6 +424,7 @@ foreach( $xml->Relations->Relation as $Relation ){
     $Relation_Id = $Relation->attributes()->id;
 
     $Tr_Relation = new Tr();
+    $Tr_Relation->id = "Relations_Relation_".$Relation_Id;
 
     /*
     * Relation Id
@@ -438,28 +444,37 @@ foreach( $xml->Relations->Relation as $Relation ){
     */
 
     $Td_Relation_Name = new Td();
+    $Td_Relation_Name->class = "text-center";
 
-    $Input_Relation_Name = new Input();
+    $Select_Relation_Field = new Select();
+    $Select_Relation_Field->class = "form-control d-block Relation_Field";
+    $Select_Relation_Field->name = "Relations_Relation_".$Relation_Id."_Field";
 
-    $Input_Relation_Name->type = "text";
-    $Input_Relation_Name->class = "form-control d-block";
-    $Input_Relation_Name->name = "Relation_".$Relation_Id."_Name";
-    $Input_Relation_Name->value = $Relation->Name;
-    $Input_Relation_Name->placeholder = "Relation Name";
+    foreach( $xml->Fields->Field as $Field ){
 
-    $Td_Relation_Name->Add($Input_Relation_Name);
+        $Option_Relation_Field = new Option();
+        $Option_Relation_Field->text = $Field->Name;
+        $Option_Relation_Field->value = $Field->attributes()->id;
+        $Option_Relation_Field->selected = $Relation->Field == $Field->Name ? true : false;
+
+        $Select_Relation_Field->Add($Option_Relation_Field);
+
+    }
+
+    $Td_Relation_Name->Add($Select_Relation_Field);
 
     /*
     * Relation Type
     */
 
     $Td_Relation_Type = new Td();
+    $Td_Relation_Type->class = "text-center";
 
     $Select_Relation_Type = new Select();
     
     $Select_Relation_Type->class = "form-control d-block";
 
-    $Select_Relation_Type->name = "Relation_".$Relation_Id."_Type";
+    $Select_Relation_Type->name = "Relations_Relation_".$Relation_Id."_Type";
 
     $Relation_types = [
         "One to One" => "OneToOne",
@@ -485,36 +500,105 @@ foreach( $xml->Relations->Relation as $Relation ){
     * Relation Table
     */
 
-    $Td_Relation_Table = new Td();
+    $Td_Relation_FKTable = new Td();
+    $Td_Relation_FKTable->class = "text-center";
 
-    $Input_Relation_Table = new Input();
-    $Input_Relation_Table->type = "text";
-    $Input_Relation_Table->class = "form-control d-block";
-    $Input_Relation_Table->name = "Relation_".$Relation_Id."_Table";
-    $Input_Relation_Table->value = $Relation->FKTable;
-    $Input_Relation_Table->placeholder = "Relation Table";
+    $Select_Relation_FKTable = new Select();
+    $Select_Relation_FKTable->class = "form-control d-block Relation_Table";
+    $Select_Relation_FKTable->name = "Relations_Relation_".$Relation_Id."_FKTable";
+    $Select_Relation_FKTable->id = "Relations_Relation_".$Relation_Id."_FKTable";
+    $Select_Relation_FKTable->AddAttribute("data-id", $Relation_Id);
+    $Select_Relation_FKTable->AddAttribute("onchange", "ChangeRelationFKTable(this)");
 
-    $Td_Relation_Table->Add($Input_Relation_Table);
+    $URL_PROJECT_OBJECTS = $Config->get("ROOT_PROJECTS").$_POST["ProjectName"]."/Objects/";
+
+    $TableSelected = "";
+
+    foreach(scandir($URL_PROJECT_OBJECTS) as $file) {
+        if ('.' === $file) continue;
+        if ('..' === $file) continue;
+        if ($XML_FILE === $URL_PROJECT_OBJECTS.$file) continue;
+
+            $XML_OBJECT = simplexml_load_file($URL_PROJECT_OBJECTS.$file);
+            
+            $Option_Relation_FKTable = new Option();
+            $Option_Relation_FKTable->text = $XML_OBJECT->Name;
+            $Option_Relation_FKTable->value = $XML_OBJECT->Name;
+            $Option_Relation_FKTable->selected = $Relation->FKTable == $XML_OBJECT->Name ? true : false;
+
+            if ((string)$Relation->FKTable == (string)$XML_OBJECT->Name){
+                $Option_Relation_FKTable->selected = true;
+                $TableSelected = $XML_OBJECT->Name;
+            }
+
+            $Select_Relation_FKTable->Add($Option_Relation_FKTable);
+    }
+    
+    $Td_Relation_FKTable->Add($Select_Relation_FKTable);
 
     /*
     * Relation Field
     */
 
-    $Td_Relation_Field = new Td();
-    
-    $Input_Relation_Field = new Input();
+    $Td_Relation_FKField = new Td();
+    $Td_Relation_FKField->class = "text-center";
 
-    $Input_Relation_Field->type = "text";
+    $Select_Relation_FKField = new Select();
+    $Select_Relation_FKField->class = "form-control d-block Relation_Field";
+    $Select_Relation_FKField->name = "Relations_Relation_".$Relation_Id."_FKField";
+    $Select_Relation_FKField->id = "Relations_Relation_".$Relation_Id."_FKField";
 
-    $Input_Relation_Field->class = "form-control d-block";
+    foreach(scandir($URL_PROJECT_OBJECTS) as $file) {
 
-    $Input_Relation_Field->name = "Relation_".$Relation_Id."_Field";
+        if ('.' === $file) continue;
+        if ('..' === $file) continue;
+        if ($XML_FILE === $URL_PROJECT_OBJECTS.$file) continue;
 
-    $Input_Relation_Field->value = $Relation->FKField;
+            $XML_OBJECT = simplexml_load_file($URL_PROJECT_OBJECTS.$file);
 
-    $Input_Relation_Field->placeholder = "Relation Field";
+            foreach( $XML_OBJECT->Fields->Field as $Field ){
 
-    $Td_Relation_Field->Add($Input_Relation_Field);
+                $Option_Relation_FKField = new Option();
+                $Option_Relation_FKField->AddAttribute("FKTable", $XML_OBJECT->Name);
+                $Option_Relation_FKField->text = $Field->Name;
+                $Option_Relation_FKField->value = $Field->attributes()->id;
+
+                if ((string) $TableSelected != (string) $XML_OBJECT->Name){
+                    $Option_Relation_FKField->css = ['display' => 'none'];
+                }
+                
+                if ((string)$Relation->FKField == (string)$Field->attributes()->id){
+                    $Option_Relation_FKField->selected = true;
+                }
+
+                $Select_Relation_FKField->Add($Option_Relation_FKField);
+            }
+
+    }
+
+    $Td_Relation_FKField->Add($Select_Relation_FKField);
+
+    /* 
+    * Delete Relation 
+    */
+
+    $Td_Relation_Delete = new Td();
+    $Td_Relation_Delete->class = "text-center";
+
+    $Button_Delete_Relation = new Button();
+    $Button_Delete_Relation->class = "btn btn-danger material-icons d-inline mr-1";
+    //BD icon
+    $Button_Delete_Relation->text = "delete";
+    $Button_Delete_Relation->onclick = "DeleteRelation(this)";
+    $Button_Delete_Relation->AddAttribute("URL", $Config->get("URL_IMPORT_MVC"));
+    $Button_Delete_Relation->AddAttribute("XML_FILE", $XML_FILE);
+    $Button_Delete_Relation->AddAttribute("Id_Relation", $Relation_Id);
+
+    $Td_Relation_Delete ->Add($Button_Delete_Relation);
+
+    /* 
+    * Add to table 
+    */
 
     $Tr_Relation->Add($Td_Relation_Id);
 
@@ -522,12 +606,13 @@ foreach( $xml->Relations->Relation as $Relation ){
 
     $Tr_Relation->Add($Td_Relation_Type);
 
-    $Tr_Relation->Add($Td_Relation_Table);
+    $Tr_Relation->Add($Td_Relation_FKTable);
 
-    $Tr_Relation->Add($Td_Relation_Field);
+    $Tr_Relation->Add($Td_Relation_FKField);
+
+    $Tr_Relation->Add($Td_Relation_Delete);
 
     $Table_Relation_header->Add($Tr_Relation);
-
 }
 
 
@@ -538,15 +623,39 @@ $Div_SubmitPos = new Div();
 $Div_SubmitPos->class = "col-1";
 
 $Button_Submit = new Button();
-$Button_Submit->class = "btn btn-primary";
-$Button_Submit->text = "Submit";
+$Button_Submit->class = "btn btn-success material-icons d-inline mr-1";
+//BD icon
+$Button_Submit->text = "save";
 $Button_Submit->type = "button";
-$Button_Submit->onclick = "SubmitEditObject()";
+$Button_Submit->onclick = "UpdateDataField(this)";
+$Button_Submit->AddAttribute("URL", $Config->get("URL_IMPORT_MVC"));
+$Button_Submit->AddAttribute("XML_FILE", $XML_FILE);
+$Button_Submit->AddAttribute("data-toggle", "tooltip");
+$Button_Submit->AddAttribute("data-placement", "top");
+$Button_Submit->AddAttribute("title", "Save");
 
 $Div_SubmitPos->Add($Button_Submit);
+
+$Div_UpdateBdPos = new Div();
+$Div_UpdateBdPos->class = "col-1";
+
+$Button_UpdateBd = new Button();
+$Button_UpdateBd->class = "btn btn-warning material-icons d-inline mr-1";
+//BD icon
+$Button_UpdateBd->text = "update";
+$Button_UpdateBd->type = "button";
+$Button_UpdateBd->onclick = "UpdateBd()";
+$Button_UpdateBd->AddAttribute("data-toggle", "tooltip");
+$Button_UpdateBd->AddAttribute("data-placement", "top");
+$Button_UpdateBd->AddAttribute("title", "Update Database");
+
+$Div_UpdateBdPos->Add($Button_UpdateBd);
+
 $Div_Submit->Add($Div_SubmitPos);
+$Div_Submit->Add($Div_UpdateBdPos);
 
 $Form = new Form();
+$Form->id = "FormObjectEdit";
 $Form->action = "";
 $Form->method = "post";
 $Form->class = "form-horizontal";
@@ -554,6 +663,7 @@ $Form->class = "form-horizontal";
 $Form->Add($Label_XML_Path);
 $Form->Add($Div_Name);
 $Form->Add($Div_Table);
+$Form->Add($Div_Fields);
 $Form->Add($Table_Field_header);
 $Form->Add($Div_Nav);
 $Form->Add($Table_Relation_header);

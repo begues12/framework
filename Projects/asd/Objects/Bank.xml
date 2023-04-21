@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Object>
-  <Name>Users</Name>
-  <Table>Users</Table>
+  <Name>Bank</Name>
+  <Table>Bank</Table>
   <Fields>
     <Field id="1">
       <Name>id_user</Name>
@@ -54,25 +54,25 @@
       <Unique>1</Unique>
       <Null>1</Null>
     </Field>
+    <Field id="6">
+      <Name></Name>
+      <Type>int</Type>
+      <Length></Length>
+      <Default></Default>
+    </Field>
   </Fields>
   <Relations>
     <Relation id="1">
       <Field>1</Field>
       <Type>ManyToMany</Type>
-      <FKTable>Bank</FKTable>
-      <FKField>3</FKField>
+      <FKTable>Users</FKTable>
+      <FKField></FKField>
     </Relation>
     <Relation id="2">
       <Field>1</Field>
       <Type>ManyToOne</Type>
-      <FKTable>Transfers</FKTable>
-      <FKField>4</FKField>
-    </Relation>
-    <Relation id="3">
-      <Field>4</Field>
-      <Type>OneToOne</Type>
-      <FKTable>Transfers</FKTable>
-      <FKField>5</FKField>
+      <FKTable>Users</FKTable>
+      <FKField></FKField>
     </Relation>
   </Relations>
 </Object>
