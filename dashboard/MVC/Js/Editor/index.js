@@ -10,6 +10,7 @@ $(document).ready(function () {
                 Ctrl : this.getAttribute('Ctrl'),
             },
             success: function (data) {
+                SetColorSidebar_Button($('#Sidebar_PageView'));
                 NoDisplayPageView();
                 $('#PageView_IFrame').contents().find('body').html(data);
                 $('#PageView_IFrame').css('display', 'block');
@@ -32,6 +33,7 @@ $(document).ready(function () {
                 ProjectPath : this.getAttribute('ProjectPath')
             },
             success: function (data) {
+                SetColorSidebar_Button($('#Sidebar_Files'));
                 NoDisplayPageView();
                 $('#PageView_ProjectFiles').html(data);
                 $('#PageView_ProjectFiles').css( 'display', 'block');
@@ -50,6 +52,7 @@ $(document).ready(function () {
                 ProjectPath : this.getAttribute('ProjectPath')
             },
             success: function (data) {
+                SetColorSidebar_Button($('#Sidebar_Config'));
                 NoDisplayPageView();
                 $('#PageView_ProjectConfig').html(data);
                 $('#PageView_ProjectConfig').css( 'display', 'block');
@@ -70,6 +73,7 @@ function LoadProjectObject(Element){
             ProjectName : Element.getAttribute('ProjectName'),
         },
         success: function (data) {
+            SetColorSidebar_Button($('#Sidebar_Objects'));
             NoDisplayPageView();
             $('#PageView_ProjectObjects').html(data);
             $('#PageView_ProjectObjects').css('display', 'block');
@@ -129,6 +133,25 @@ function EditObject(FileBox){
     });
 }
 
+function SetColorSidebar_Button(Element){
+    // Set color for Sidebar Button
+    $(".Sidebar_Button").each(function () {
+        // Add background dark class
+        $(this).addClass('bg-light');
+        $(this).removeClass('bg-primary');
+
+        $(this).css('color', 'black');
+        
+        if (Element.attr('id') == $(this).attr('id')){
+            // Remove background dark class
+            $(this).removeClass('bg-light');
+            $(this).addClass('bg-primary');
+            $(this).css('color', 'white');
+        }
+    
+    });
+
+}
 function NoDisplayPageView(Except = null){
     ///Display None all Elements in PageView class
     $(".PageView").each(function () {

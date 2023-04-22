@@ -365,10 +365,10 @@ foreach( $xml->Fields->Field as $Field){
 */
 
 $Div_Nav = new Div();
-$Div_Nav->class = "d-flex flex-row-reverse m-2";
+$Div_Nav->class = "d-flex flex-row-reverse m-1";
 
 $Nav_Relation = new Div();
-$Nav_Relation->class = "col-11";
+$Nav_Relation->class = "col-10";
 
 $Label_Relation = new Label();
 $Label_Relation->class = "form-control-label d-block h3 font-weight-bold";
@@ -381,19 +381,12 @@ $Nav_Relation_tools->class = "col-1";
 
 $Button_Add_Relation = new Button();
 
-$Button_Add_Relation->class = "btn btn-primary p-0 m-0";
-$Button_Add_Relation->css = [ "width" => "25px", "height" => "25px" ];
+$Button_Add_Relation->class = "btn btn-primary";
+$Button_Add_Relation->text = "Add Relation";
 $Button_Add_Relation->onclick = "AddRelation(this)";
 $Button_Add_Relation->AddAttribute("URL", $Config->get("URL_IMPORT_MVC"));
 $Button_Add_Relation->AddAttribute("XML_FILE", $XML_FILE);
 $Button_Add_Relation->AddAttribute("ProjectName", $_POST["ProjectName"]);
-
-$Icon_Add_Relation = new I();
-$Icon_Add_Relation->class = "material-icons";
-$Icon_Add_Relation->css = [ "font-size" => "20px", "margin" => "auto"];
-$Icon_Add_Relation->text = "add";
-
-$Button_Add_Relation->Add($Icon_Add_Relation);
 
 $Nav_Relation_tools->Add($Button_Add_Relation);
 

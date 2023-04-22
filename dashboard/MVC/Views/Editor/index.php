@@ -84,7 +84,7 @@ $Editor->css = [
 // Page view button
 $Button_pageView = new Button();
 // On mouse hover, the button will change its color
-$Button_pageView->class = "btn p-1 hover";
+$Button_pageView->class = "btn Sidebar_Button";
 $Button_pageView->id = "Sidebar_PageView";
 $Button_pageView->AddAttribute("title", "Page View");
 $Button_pageView->AddAttribute("Ctrl", "index");
@@ -99,7 +99,7 @@ $Button_pageView->Add($Icono_sidebar->copy());
 $Sidebar->AddElement($Button_pageView);
 
 $Button_Files = new Button();
-$Button_Files->class = "btn p-1";
+$Button_Files->class = "btn Sidebar_Button";
 $Button_Files->id = "Sidebar_Files";
 $Button_Files->AddAttribute("title", "Files");
 $Button_Files->AddAttribute("Ctrl", "index");
@@ -116,7 +116,7 @@ $Sidebar->AddElement($Button_Files);
 
 // Objects button
 $Button_Objects = new Button();
-$Button_Objects->class = "btn p-1";
+$Button_Objects->class = "btn Sidebar_Button";
 $Button_Objects->id = "Sidebar_Objects";
 $Button_Objects->AddAttribute("title", "ProjectObjects");
 $Button_Objects->AddAttribute("Url", $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectObjects");
@@ -131,14 +131,14 @@ $Sidebar->AddElement($Button_Objects);
 
 // Configurations button
 $Button_config = new Button();
-$Button_config->class = "btn p-1";
+$Button_config->class = "btn Sidebar_Button";
 $Button_config->id = "Sidebar_Config";
 $Button_config->AddAttribute("title", "Configurations");
 $Button_config->AddAttribute("Url", $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectConfig");
 $Button_config->AddAttribute("ProjectName", $ProjectName);
 
 $Icono_sidebar = new I();
-$Icono_sidebar->class = "material-icons hover";
+$Icono_sidebar->class = "material-icons hover m-0 p-0";
 $Icono_sidebar->text = "settings";
 
 $Button_config->Add($Icono_sidebar->copy());
