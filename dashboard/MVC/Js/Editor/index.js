@@ -152,6 +152,7 @@ function SetColorSidebar_Button(Element){
     });
 
 }
+
 function NoDisplayPageView(Except = null){
     ///Display None all Elements in PageView class
     $(".PageView").each(function () {
@@ -281,5 +282,27 @@ function ChangeRelationFKTable(Element){
         }
     });
 
+
+}
+
+function UpdateBD(Element){
+
+    var FormJson = $('#FormObjectEdit').serializeArray();
+    var jsonData = JSON.stringify(FormJson);
+
+    $.ajax({
+        // Get attributes url
+        url: Element.getAttribute('Url') + "?Ctrl=Editor/ProjectObjects&Action=UpdateBd",
+        type: 'POST',
+        datatype: 'json',
+        data : { 
+            // Get Form Data
+            'XML_FILE' : Element.getAttribute('XML_FILE'),
+            'ProjectName' : Element.getAttribute('ProjectName'),
+        },
+        success: function (data) {
+            NoDisplayPageView($('#PageView_ProjectObjects'));
+        }
+    });
 
 }

@@ -637,7 +637,13 @@ $Button_UpdateBd->class = "btn btn-warning material-icons d-inline mr-1";
 //BD icon
 $Button_UpdateBd->text = "update";
 $Button_UpdateBd->type = "button";
-$Button_UpdateBd->onclick = "UpdateBd()";
+$Button_UpdateBd->onclick = "UpdateBD(this)";
+// URL
+$Button_UpdateBd->AddAttribute("URL", $Config->get("URL_IMPORT_MVC"));
+// XML_FILE
+$Button_UpdateBd->AddAttribute("XML_FILE", $XML_FILE);
+// Project Name
+$Button_UpdateBd->AddAttribute("Project_Name", $Project_Name);
 $Button_UpdateBd->AddAttribute("data-toggle", "tooltip");
 $Button_UpdateBd->AddAttribute("data-placement", "top");
 $Button_UpdateBd->AddAttribute("title", "Update Database");

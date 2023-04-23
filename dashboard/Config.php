@@ -6,6 +6,7 @@ class Config{
 
     public $config = [];
     public $baseUrl;
+    public $basePath;
     public $get = [];
     public $post = [];
     public $request = [];
@@ -13,10 +14,11 @@ class Config{
     function __construct(){
 
         $this->baseUrl = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST'];
+        $this->basePath = dirname(__DIR__, 1);
 
         $this->config = [
-            'ROOT'          => dirname(__DIR__, 1),
-            'CONFIG'        => dirname(__DIR__, 1)."/Config.php",
+            'ROOT'          => $this->basePath,
+            'CONFIG'        => $this->basePath."/Config.php",
             
             // URLS
             'URL'           => $this->baseUrl,
@@ -32,16 +34,21 @@ class Config{
             'URL_BASEOBJECT'=> $this->baseUrl."/framework/Engine/Core/BaseObject.php",
 
             // ROOTS
-            'ROOT_DASHBOARD'=> dirname(__DIR__, 1)."\Dashboard/",
-            'ROOT_PROJECTS'  => dirname(__DIR__, 1)."\Projects/",
-            'ROOT_ACTIONS'  => dirname(__DIR__, 1)."/dashboard/MVC/Actions/",
-            'ROOT_IMPORTMVC'=> dirname(__DIR__, 1)."/dashboard/ImportMVC.php",
-            'ROOT_UTILS'    => dirname(__DIR__, 1)."/Engine/Utils/",
-            'ROOT_HTML'     => dirname(__DIR__, 1)."/Engine/Utils/HTML/",
-            'ROOT_WIDGETS'  => dirname(__DIR__, 1)."/Engine/Utils/Widgets/",
-            'ROOT_CORE'     => dirname(__DIR__, 1)."/Engine/Core/",
-            'ROOT_OBJECTS'  => dirname(__DIR__, 1)."/Engine/Objects/",
-            'ROOT_BASEOBJECT' => dirname(__DIR__, 1)."/Engine/Core/BaseObject.php",
+            'ROOT_DASHBOARD'=> $this->basePath."\Dashboard/",
+            'ROOT_PROJECTS'  => $this->basePath."\Projects/",
+            'ROOT_ACTIONS'  => $this->basePath."/dashboard/MVC/Actions/",
+            'ROOT_IMPORTMVC'=> $this->basePath."/dashboard/ImportMVC.php",
+            'ROOT_UTILS'    => $this->basePath."/Engine/Utils/",
+            'ROOT_HTML'     => $this->basePath."/Engine/Utils/HTML/",
+            'ROOT_WIDGETS'  => $this->basePath."/Engine/Utils/Widgets/",
+            'ROOT_CORE'     => $this->basePath."/Engine/Core/",
+            'ROOT_OBJECTS'  => $this->basePath."/Engine/Objects/",
+            'ROOT_BASEOBJECT' => $this->basePath."/Engine/Core/BaseObject.php",
+
+            // DATABASE
+            'DB_HOST'          => 'localhost',
+            'DB_USER'          => 'root',
+            'DB_PASS'      => '',
         ];
 
     }
