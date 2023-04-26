@@ -14,7 +14,7 @@ class Config{
     function __construct(){
 
         $this->baseUrl = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST'];
-        $this->basePath = dirname(__DIR__, 1);
+        $this->basePath = dirname(__DIR__, 2);
 
         $this->config = [
             'ROOT'          => $this->basePath,

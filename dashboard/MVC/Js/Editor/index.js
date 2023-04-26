@@ -287,14 +287,10 @@ function ChangeRelationFKTable(Element){
 
 function UpdateBD(Element){
 
-    var FormJson = $('#FormObjectEdit').serializeArray();
-    var jsonData = JSON.stringify(FormJson);
-
     $.ajax({
         // Get attributes url
         url: Element.getAttribute('Url') + "?Ctrl=Editor/ProjectObjects&Action=UpdateBd",
         type: 'POST',
-        datatype: 'json',
         data : { 
             // Get Form Data
             'XML_FILE' : Element.getAttribute('XML_FILE'),

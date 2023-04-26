@@ -89,7 +89,7 @@ $Table_Field_header->id = "Table_Fields";
 
 $Tr_Field_header = new Tr();
 
-$All_Fields = ["id", "Name", "Type", "Length", "AI", "Required", "Default", "PK", "Unique", "Null", "Actions" ];
+$All_Fields = ["id", "Name", "Type", "Length", "AI", "Default", "PK", "Unique", "Null", "Actions" ];
 
 foreach($All_Fields as $Field){
 
@@ -241,24 +241,13 @@ foreach( $xml->Fields->Field as $Field){
         $Checkbox_AI->checked = $Field->AutoIncrement == "1" ? true : false;
     }
 
+    $Input_Hidden_AI = new Input();
+    $Input_Hidden_AI->type = "hidden";
+    $Input_Hidden_AI->name = "Fields_Field_".$Field_Id."_AutoIncrement";
+    $Input_Hidden_AI->value = "0";
+
+    $Td_Field_AI->Add($Input_Hidden_AI);
     $Td_Field_AI->Add($Checkbox_AI);
-
-    /* Required */
-
-    $Td_Field_Requiered = new Td();
-    $Td_Field_Requiered->class = "justify-content-center";
-
-    $Checkbox_Requiered = new Input();
-    $Checkbox_Requiered->type = "checkbox";
-    $Checkbox_Requiered->class = "form-control ml-auto mr-auto";
-    $Checkbox_Requiered->name = "Fields_Field_".$Field_Id."_Required";
-    $Checkbox_Requiered->value = "1";
-    $Checkbox_Requiered->css = [ "width" => "15px", "height" => "15px" ];
-    if (isset($Field->Required)) {
-        $Checkbox_Requiered->checked = $Field->Required == "1" ? true : false;
-    }
-
-    $Td_Field_Requiered->Add($Checkbox_Requiered);
 
     /* Default */
 
@@ -291,6 +280,13 @@ foreach( $xml->Fields->Field as $Field){
     if (isset($Field->PrimaryKey)){
         $Checkbox_PrimaryKey->checked = $Field->PrimaryKey == "1" ? true : false;
     }
+
+    $Input_Hidden_PrimaryKey = new Input();
+    $Input_Hidden_PrimaryKey->type = "hidden";
+    $Input_Hidden_PrimaryKey->name = "Fields_Field_".$Field_Id."_PrimaryKey";
+    $Input_Hidden_PrimaryKey->value = "0";
+
+    $Td_Field_PrimaryKey->Add($Input_Hidden_PrimaryKey);
     $Td_Field_PrimaryKey->Add($Checkbox_PrimaryKey);
 
     /* Unique */
@@ -309,6 +305,11 @@ foreach( $xml->Fields->Field as $Field){
         $Checkbox_Unique->checked = $Field->Unique == "1" ? true : false;
     }
 
+    $Input_Hidden_Unique = new Input();
+    $Input_Hidden_Unique->type = "hidden";
+    $Input_Hidden_Unique->name = "Fields_Field_".$Field_Id."_Unique";
+
+    $Td_Field_Unique->Add($Input_Hidden_Unique);
     $Td_Field_Unique->Add($Checkbox_Unique);
 
     /* Null */
@@ -326,6 +327,12 @@ foreach( $xml->Fields->Field as $Field){
         $Checkbox_Null->checked = $Field->Null == "1" ? true : false;
     }
 
+    $Input_Hidden_Null = new Input();
+    $Input_Hidden_Null->type = "hidden";
+    $Input_Hidden_Null->name = "Fields_Field_".$Field_Id."_Null";
+    $Input_Hidden_Null->value = "0";
+
+    $Td_Field_Null->Add($Input_Hidden_Null);
     $Td_Field_Null->Add($Checkbox_Null);
 
     /* Delete */
@@ -348,7 +355,6 @@ foreach( $xml->Fields->Field as $Field){
     $Tr_Field->Add($Td_Field_Type);
     $Tr_Field->Add($Td_Field_Length);
     $Tr_Field->Add($Td_Field_AI);
-    $Tr_Field->Add($Td_Field_Requiered);
     $Tr_Field->Add($Td_Field_Default);
     $Tr_Field->Add($Td_Field_PrimaryKey);
     $Tr_Field->Add($Td_Field_Unique);
@@ -643,7 +649,7 @@ $Button_UpdateBd->AddAttribute("URL", $Config->get("URL_IMPORT_MVC"));
 // XML_FILE
 $Button_UpdateBd->AddAttribute("XML_FILE", $XML_FILE);
 // Project Name
-$Button_UpdateBd->AddAttribute("Project_Name", $Project_Name);
+$Button_UpdateBd->AddAttribute("ProjectName", $_POST["ProjectName"]);
 $Button_UpdateBd->AddAttribute("data-toggle", "tooltip");
 $Button_UpdateBd->AddAttribute("data-placement", "top");
 $Button_UpdateBd->AddAttribute("title", "Update Database");

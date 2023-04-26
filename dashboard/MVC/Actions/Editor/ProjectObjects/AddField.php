@@ -159,18 +159,7 @@ if ($XML_FILE != "") {
     
         $Td_Field_AI->Add($Checkbox_AI);
     
-        /* Required */
-    
-        $Td_Field_Requiered = new Td();
-        $Td_Field_Requiered->class = "justify-content-center";
-    
-        $Checkbox_Requiered = new Input();
-        $Checkbox_Requiered->type = "checkbox";
-        $Checkbox_Requiered->class = "form-control ml-auto mr-auto";
-        $Checkbox_Requiered->name = "Fields_Field_".$Field_Id."_Required";
-        $Checkbox_Requiered->css = [ "width" => "15px", "height" => "15px" ];
-    
-        $Td_Field_Requiered->Add($Checkbox_Requiered);
+
     
         /* Default */
     
@@ -245,7 +234,6 @@ if ($XML_FILE != "") {
         $Tr_Field->Add($Td_Field_Type);
         $Tr_Field->Add($Td_Field_Length);
         $Tr_Field->Add($Td_Field_AI);
-        $Tr_Field->Add($Td_Field_Requiered);
         $Tr_Field->Add($Td_Field_Default);
         $Tr_Field->Add($Td_Field_PrimaryKey);
         $Tr_Field->Add($Td_Field_Unique);
@@ -299,10 +287,6 @@ if ($XML_FILE != "") {
         $desc = $doc->createElement('Description');
         $desc->appendChild($doc->createTextNode(""));
         $nuevo_campo->appendChild($desc);
-
-        $required = $doc->createElement('Required');
-        $required->appendChild($doc->createTextNode("0"));
-        $nuevo_campo->appendChild($required);
 
         $default = $doc->createElement('Default');
         $default->appendChild($doc->createTextNode(""));
