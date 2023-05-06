@@ -9,12 +9,20 @@
 
 namespace Core;
 
+require_once "Config.php";
+use Engine\Core\Config;
+
+
 class BaseUtils{
 
     #This function is parent of all of the classes in the Engine\Utils folder
     #It is used to create a new object of the class
     #It for create new html elements
     #Get all of the html attributes and css attributes
+
+    public $Config;
+    public $Js = "";
+    public $doNothing;
 
     public $return = "";
     public $css = [];
@@ -23,7 +31,7 @@ class BaseUtils{
     public $class = "";
     public $id = "";
     public $required = false;
-    public $tag = "";
+    public $tag = "div";
     public $content = [];
     public $type = "";
     public $value = "";
@@ -67,6 +75,11 @@ class BaseUtils{
 
 
     function __construct(){
+
+        $this->Config = new Config();
+        $this->Js = "";
+        $this->doNothing = false;
+
         $this->return = "";
         $this->css = [];
         $this->attributes = [];
@@ -123,7 +136,7 @@ class BaseUtils{
         $this->onblur = "";
         $this->onchange = "";
         $this->onselect = "";
-        
+
     }
 
     /*
@@ -183,7 +196,7 @@ class BaseUtils{
 
     function build(){
 
-        $this->return = "<".$this->tag;
+        $this->return .= "<".$this->tag;
         
         if($this->name != ""){
             $this->return .= " name='".$this->name."'";
@@ -363,6 +376,10 @@ class BaseUtils{
         }
         $this->return .= ">";
 
+        if ($this->Js != ""){
+            $this->return .= "<script src='{$this->Js}'></script>";
+        }
+
         if(count($this->content) > 0){
             foreach($this->content as $value){
                 $this->return .= $value->toString();
@@ -393,6 +410,15 @@ class BaseUtils{
         echo $this->build();
     }
 
+    function Js(String $js){
+
+        $Config = new Config();
+
+        if (file_exists($Config->get('ROOT_JS').$js)){
+            $this->Js = $Config->get('URL_JS').$js;
+        }
+    }
+
 }
 
 ####################
@@ -400,7 +426,8 @@ class BaseUtils{
 #       (\___/)    #
 #       /_O_O_\    #
 #      {=^___^=}   #
-#                  #
+#       \_/ \_/    #
+#__________________#
 # Github:@Begues12 #
 ####################
 

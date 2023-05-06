@@ -5,7 +5,10 @@ require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Div.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Nav.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Ul.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Label.php";
-require_once dirname(__DIR__, 3)."\Engine\Core\BaseUtils.php";
+require_once("Config.php");
+use Engine\Core\Config;
+$Config = new Config();
+require_once $Config->get('FILE_BASEUTILS');
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Li.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Button.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Span.php";
@@ -31,7 +34,9 @@ class Navbar extends Nav{
         parent::__construct();
         $this->class = "navbar navbar-expand-md navbar-dark bg-dark";
         $this->id = "navbar";
-        $this->css = [];
+        $this->css = [
+            'height' => '8vh',
+        ];
         $this->content = [];
 
         //Title

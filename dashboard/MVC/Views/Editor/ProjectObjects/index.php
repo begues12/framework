@@ -1,126 +1,95 @@
 <?php
+namespace MVC\Views\Editor\ProjectObjects;
 
 require_once "Config.php";
 
 use Engine\Core\Config;
 $Config = new Config();
 
+use Engine\Core\BaseView;
+
 require_once $Config->get('ROOT_HTML')."Button.php";
 require_once $Config->get('ROOT_HTML')."I.php";
 require_once $Config->get('ROOT_HTML')."Div.php";
 require_once $Config->get('ROOT_HTML')."Label.php";
 require_once $Config->get('ROOT_HTML')."Input.php";
+require_once $Config->get('ROOT_HTML')."Table.php";
+require_once $Config->get('ROOT_HTML')."Tr.php";
+require_once $Config->get('ROOT_HTML')."Th.php";
+require_once $Config->get('ROOT_WIDGETS')."ErrorMsg.php";
+require_once $Config->get('ROOT_WIDGETS')."ProjectObjects\TrProjectObject.php";
 
 use Engine\Utils\HTML\Button;
 use Engine\Utils\HTML\I;
 use Engine\Utils\HTML\Div;
 use Engine\Utils\HTML\Label;
+use Engine\Utils\HTML\Table;
+use Engine\Utils\HTML\Tr;
+use Engine\Utils\HTML\Th;
 use Engine\Utils\HTML\Input;
+use Engine\Utils\Widgets\ErrorMsg;
+use Engine\Utils\Widgets\ProjectObjects\TrProjectObject;
 
-// URL to projects folder
-$url = "";
-if (isset($_POST['ProjectName'])){
-    $url = $Config->get('ROOT_PROJECTS').$_POST['ProjectName']."/Objects/";
-}
 
-$Div_nav = new Div();
-$Div_nav->class = "m-0 p-0 row text-center";
+class Index extends BaseView{
 
-$Div_Url = new Div();
-$Div_Url->class = "m-0 p-0 col-11";
+    public $ProjectName;
+    public $Tables;
 
-$Input_Url = new Input();
-$Input_Url->type = "text";
-$Input_Url->class = "form-control w-100";
-$Input_Url->value = $url;
+    function __construct(){
+        parent::__construct();
+    }
 
-$Div_Url->Add($Input_Url);
+    public function Prepare()
+    {   
 
-$Div_nav->Add($Div_Url);
+        $this->Tables = $this->getVar('Tables');
+        $this->ProjectName = $this->getVar('ProjectName');
 
-$Div_add = new Div();
+        $Label_Title = new Label();
+        $Label_Title->class = "form-control-label font-weight-bold h3 border-bottom d-block";
+        $Label_Title->text = "Project Objects";
 
-$Div_add->class = "m-0 p-0 col-1 text-center";
+        $this->Add($Label_Title);
 
-$Add_Button = new Button();
+        $Table_Objects = new Table();
+        $Table_Objects->class = "table table-striped table-light table-hover mt-3";
 
-$Add_Button->class = "btn btn-primary";
+        $Tr_Objects = new Tr();
+        $Tr_Objects->class = "thead-light";
 
-$Add_Button->onclick = "CreateBox(this);";
-$Add_Button->AddAttribute("Url", $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectFiles");
-$Add_Button->AddAttribute("ProjectPath", $url);
+        $Th_Index_Object = new Th();
+        $Th_Index_Object->class = "text-center";
+        $Th_Index_Object->text = "#";
 
-$I_Add = new I();
-$I_Add->class = "material-icons FileBox";
-$I_Add->text = "add";
-$Add_Button->Add($I_Add);
+        $Th_Name_Object = new Th();
+        $Th_Name_Object->class = "text-center";
+        $Th_Name_Object->text = "Nombre";
 
-$Div_add->Add($Add_Button);
+        $Th_Actions_Object = new Th();
+        $Th_Actions_Object->class = "text-center";
+        $Th_Actions_Object->text = "Accions";
 
-$Div_nav->Add($Div_add);
+        $Tr_Objects->Add($Th_Index_Object);
+        $Tr_Objects->Add($Th_Name_Object);
+        $Tr_Objects->Add($Th_Actions_Object);
 
-$Div_nav->render();
+        $Table_Objects->Add($Tr_Objects);
 
-$Div_grid = new Div();
-$Div_grid->class = "m-0 p-1";
-
-foreach (scandir($url) as $key => $file) {
-    if ($file != "." && $file != ".."){
+        foreach ($this->Tables[0]['Rows'] as $key => $table) {
         
-        $Div = new Div();
-    
-        $Div->class = "border border-dark rounded";
-        
-        $Div->css = [
-            'width' => '7em',
-            'height' => '7em',
-            'margin' => '5px',
-            'display' => 'inline-block',
-        ];
+            $ObjectName = $table['Tables_in_'.$this->ProjectName];
+            $TrProjectObject = new TrProjectObject($key, $ObjectName, $this->ProjectName);
+            $Table_Objects->Add($TrProjectObject->Copy());
+        }
 
-        $Button = new Button();
-        $Button->type = "button";
-        $Button->onclick = "EditObject(this);";
-
-        $Button->class = "btn btn-primary";
-
-        ///Editar el Objeto
-        $Button->AddAttribute(
-            "Url", 
-            $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectObjects&Do=Edit"
-        );
-        $Button->AddAttribute("ObjectPath", $url.$file);
-        $Button->AddAttribute("ProjectName", $_POST['ProjectName']);
-
-        $Button->css = [
-            'width' => '100%',
-            'height' => '100%',
-            'margin' => '0px',
-            'padding' => '0px',
-        ];
-
-        $I = new I();
-        $I->class = "material-icons mt-auto mb-auto d-block";
-
-        //Box
-        $I->text = "inventory_2";
-        
-        $Label = new Label();
-        $Label->class = "mt-auto mb-auto";
-        $Label->text = $file;
-
-        $Button->Add($I);
-        $Button->Add($Label);
-
-        $Div->Add($Button);
-
-        $Div_grid->Add($Div);
+        $this->Add($Table_Objects);
 
     }
-    
+
+
 }
 
-$Div_grid->render();
 
 
 

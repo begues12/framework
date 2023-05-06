@@ -1,4 +1,5 @@
 <?php
+namespace Engine\Core;
 
 require_once('Config.php');
 
@@ -13,16 +14,24 @@ class BaseSQL{
     public $queryes = [];
     public $result = [];
     public $autoCommit = false;
+    public $showErrors = true;
 
     public function __construct(String $database){
         $this->config = new Config();
         $this->database = $database;
-        $this->connection = new mysqli($this->config->get('DB_HOST'), $this->config->get('DB_USER'), $this->config->get('DB_PASS'), $database);
+        // $this->connection = new mysqli($this->config->get('DB_HOST'), $this->config->get('DB_USER'), $this->config->get('DB_PASS'), $database);
+        $this->connection = new \mysqli($this->config->get('DB_HOST'), $this->config->get('DB_USER'), $this->config->get('DB_PASS'), $database);
         if ($this->connection->connect_error) {
             $this->errors[]['Error'] = $this->connection->connect_error;
             $this->errors[]['Query'] = "Connection to database $database";
         }
         $this->connection->autocommit($this->autoCommit);
+
+        if (!$this->showErrors){
+            ini_set('error_reporting', E_ALL);
+            ini_set('display_errors', 'Off');
+        }
+
     }
 
     public function setDatabase(String $database){
@@ -115,6 +124,16 @@ class BaseSQL{
         $this->query($query);
     }
 
+    /* Delete <table></table>
+    *   @param $table String
+
+    */
+
+    public function dropTable(String $table){
+        $query = "DROP TABLE $table";
+        $this->query($query);
+    }
+
     /*
     *   @param $table String
     *   @param $where String
@@ -146,6 +165,23 @@ class BaseSQL{
         // Return result assoc
         return $this->result;
         
+    }
+
+    /*
+    *   @param $table String
+    *   @param $where String
+    */
+
+    public function getTables(){
+        
+        $this->clearResult();
+
+        $query = "SHOW TABLES"; 
+
+        $this->query($query);
+
+        // Return result assoc
+        return $this->Apply();
     }
 
     /*
@@ -206,42 +242,87 @@ class BaseSQL{
     /*
     *   Alter table
     *   @param $table String
-    *   @param $data Array
+    *   @param $AlterType String
+    *   @param $Column String
+    *   @param $Type String
+    *   @param $Length int
+    *   @param $Data Array
+    *   @param $PK bool
+    *   @param $FK Array
     */
 
-    public function alterTable(String $table, String $AlterType, String $Column, String $Type = null, int $Length = null, Array $Data, bool $PK = null, Array $FK = null){
-
-        $query = "ALTER TABLE $table ";
-
-        $query .= "$AlterType $Column";
-
-        if ($Type != null) {
-            $query .= " $Type";
-
-            if ($Length != null) {
-                $query .= "($Length)";
+    public function alterTable(
+        string $table,
+        string $alterType,
+        string $column,
+        ?string $type = null,
+        ?string $length = null,
+        ?bool $ai = null,
+        ?string $default = null,
+        ?bool $pk = null,
+        ?bool $unique = null,
+        ?bool $null = null,
+        ?array $fk = null
+    ): string {
+        $columnsInfo = $this->showColumns($table)[0]['Rows'];
+        echo $pk."------------------";
+        foreach ($columnsInfo as $columnInfo) {
+            if ($columnInfo['Key'] === 'PRI' && $pk == true) {
+                $this->query("ALTER TABLE $table DROP PRIMARY KEY");
+                echo "ALTER TABLE $table DROP PRIMARY KEY";
+                break;
             }
-
         }
-
-        foreach ($Data as $key => $value) {
-            $query .= " $key $value";
+        
+        $query = "ALTER TABLE $table $alterType $column";
+        
+        if ($type !== null) {
+            $query .= " $type";
+            
+            if ($length !== null) {
+                $query .= "($length)";
+            }
         }
-
-        if ($PK != null) {
-            $query .= " PRIMARY KEY ";
+        
+        if ($pk !== null && $pk) {
+            $query .= " PRIMARY KEY";
         }
-
-        if ($FK != null) {
+        
+        if ($ai === null && $ai) {
+            $query .= " AUTO_INCREMENT";
+        }
+        
+        if ($null !== null) {
+            $query .= $null ? " NULL" : " NOT NULL";
+        }
+        
+        if ($null !== true && $default !== null && $default !== '') {
+            $query .= " DEFAULT '$default'";
+        }
+        
+        if ($null !== true && $unique !== null && $unique) {
+            $query .= " UNIQUE";
+        }
+        
+        if ($fk !== null) {
             $query .= " FOREIGN KEY (";
-            foreach ($FK as $key => $value) {
-                $query .= "$key, ";
-            }
-            $query = substr($query, 0, -2);
-            $query .= ") REFERENCES $FK[0]($FK[1])";
+            $query .= implode(', ', array_keys($fk));
+            $query .= ") REFERENCES $fk[0]($fk[1])";
         }
-
+        
+        $query .= ";";
+        
         $this->query($query);
+        
+        return $query;
+    }
+    public function OK(){
+
+        if (count($this->errors) == 0) {
+            return true;
+        }else{
+            return false;
+        }
 
     }
 
@@ -269,6 +350,14 @@ class BaseSQL{
 
         $query = "SELECT COUNT(*) FROM $table".$Condition;
         $this->query($query);
+    }
+
+    public function getFields(String $table){
+        $query = "SHOW COLUMNS FROM $table";
+        $this->query($query);
+
+        return $this->Apply();
+
     }
 
     /*
@@ -356,8 +445,7 @@ class BaseSQL{
         $num_errors = 0;
 
         foreach ($this->queryes as $query) {
-            echo $query.'<br>';
-            mysqli_query($this->connection, $query);
+
             $this->result[] = [];
 
             $countResultIndex = count($this->result) - 1;
@@ -374,7 +462,7 @@ class BaseSQL{
             }else if ($result && $this->connection->affected_rows > 0) {
                 $this->result[$countResultIndex]['Result'] = $result;
                 // Num rows
-                $this->config->pre_array($result);
+                // $this->config->pre_array($result);
                 $this->result[$countResultIndex]['NumRows'] = $result->num_rows;
                 
                 // Rows
@@ -392,6 +480,8 @@ class BaseSQL{
             $this->connection->commit();
         }
         
+        // $this->close();
+
         $results = $this->result;
 
         $this->clearResult();
@@ -402,5 +492,15 @@ class BaseSQL{
     }
 
 }
+
+####################
+#        ,~~~.     #
+#       (\___/)    #
+#       /_O_O_\    #
+#      {=^___^=}   #
+#       \_/ \_/    #
+#__________________#
+# Github:@Begues12 #
+####################
 
 ?>

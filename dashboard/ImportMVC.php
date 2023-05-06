@@ -1,70 +1,208 @@
 <?php
+namespace Engine\Core;
+
 require_once "Config.php";
 use Engine\Core\Config;
+
 $Config = new Config();
 
-$ctrl = "Menu";
-$do = 'index';
-$action = "";
+require_once $Config->get('FILE_BASESQL');
+require_once $Config->get('FILE_BASECONTROLLER');
+require_once $Config->get('FILE_BASEVIEW');
+require_once $Config->get('FILE_ERRORMSG');
 
-if(isset($_GET['Ctrl'])){
+use Engine\Core\BaseSQL;
+use Engine\Core\BaseController;
+use Engine\Core\BaseView;
+use Engine\Utils\Widgets\ErrorMsg;
 
-    $ctrl = $_GET['Ctrl'];
+class ImportMVC{
 
-    if(isset($_GET['Do'])){
-        $do = $_GET['Do'];
+    public $ctrl;
+    public $do;
+    public $action;
+    public $Config;
+    public $pathCtrl;
+    public $pathView;
+    public $pathAction;
+    public $pathJs;
+    public $pathCss;
+    public $Vars = array();
+
+    function __construct(){
+        $this->Config = new Config();
+        $this->ctrl = "Menu";
+        $this->do = "Index";
+        $this->action = "";
     }
 
-    if (isset($_GET['Action'])) {
-        $action = $_GET['Action'];
+    public function getCtrl(){
+        if (isset($_GET['Ctrl'])) {
+            $this->setCtrl($_GET['Ctrl']);
+        }
     }
 
-}
+    public function getDo(){
+        if (isset($_GET['Do'])) {
+            $this->setDo($_GET['Do']);
+        }
+    }
 
+    public function getAction(){
+        if (isset($_GET['Action'])) {
+            $this->setAction($_GET['Action']);
+        }
+    }
 
-// Create iclude view
-$path_file =        "MVC/Views/".$ctrl."/".$do.".php";
-$path_controller = "MVC/Controllers/".$ctrl."/".$do.".php";
-$path_actions =     "MVC/Actions/".$ctrl."/".$action.".php";
-$path_js =         "MVC/Js/".$ctrl."/".$do.".js";
-$path_css =        "MVC/Css/".$ctrl."/".$do.".css";
+    public function setCtrl($ctrl){
+        $this->ctrl = $ctrl;
+    }
 
-$Actual_URl = $_SERVER['REQUEST_URI'];
+    public function setDo($do){
+        $do = str_replace("/", "\\", $do);
+        $this->do = $do;
+    }
 
-if(file_exists($Config->get('ROOT_DASHBOARD').$path_css)){
-    echo "<link rel='stylesheet' href='".$path_css."'>";
-}
+    public function setAction($action){
+        $this->action = $action;
+    }
 
-if(file_exists($Config->get('ROOT_DASHBOARD').$path_js)){
-    echo "<script src='".$path_js."'></script>";
-}
+    public function getActualUrl(){
+        return $_SERVER['REQUEST_URI'];
+    }
 
-if (file_exists($Config->get('ROOT_DASHBOARD').$path_actions)) {
-    include_once $path_actions;
-    die();
-}
+    public function getRootDashboard(){
+        return $this->Config->get('ROOT_DASHBOARD');
+    }
 
-if(file_exists( $Config->get('ROOT_DASHBOARD').$path_file) && file_exists( $Config->get('ROOT_DASHBOARD').$path_controller)){
-    include_once $path_controller;
-    include_once $path_file;
-}
+    public function getRootJs(){
+        return $this->Config->get('ROOT_JS');
+    }
 
+    public function getRootCss(){
+        return $this->Config->get('ROOT_CSS');
+    }
 
+    public function getRootWidgets(){
+        return $this->Config->get('ROOT_WIDGETS');
+    }
 
-if(!file_exists( $Config->get('ROOT_DASHBOARD').$path_controller)){
-    echo "<div style='margin: 0 auto; background-color: #f5f5f5; padding: 20px; border: 1px solid #e3e3e3; border-radius: 4px;'>";
-    echo "<h3>404</h3>";
-    echo "<h5>Controller not found</h5>";
-    echo "<label>".$Config->get('ROOT_DASHBOARD').$path_controller."</label>";
-    echo "</div>";
-}
+    public function getRootImages(){
+        return $this->Config->get('ROOT_IMAGES');
+    }
 
-if (!file_exists($Config->get('ROOT_DASHBOARD').$path_file)) {
-    echo "<div style='margin: 0 auto; background-color: #f5f5f5; padding: 20px; border: 1px solid #e3e3e3; border-radius: 4px;'>";
-    echo "<h3>404</h3>";
-    echo "<h5>View not found</h5>";
-    echo "<label>".$Config->get('ROOT_DASHBOARD').$path_file."</label>";
-    echo "</div>";
+    public function getRootFonts(){
+        return $this->Config->get('ROOT_FONTS');
+    }
+
+    public function getUrlJs(){
+        return $this->Config->get('URL_JS');
+    }
+
+    public function getUrlCss(){
+        return $this->Config->get('URL_CSS');
+    }
+
+    public function getUrlImages(){
+        return $this->Config->get('URL_IMAGES');
+    }
+
+    public function getUrlFonts(){
+        return $this->Config->get('URL_FONTS');
+    }
+
+    public function getRoot(){
+        return $this->Config->get('ROOT');
+    }
+
+    public function getRootController(){
+        return $this->Config->get('ROOT_CONTROLLER');
+    }
+
+    public function setVar($key, $value){
+        $this->Vars[$key] = $value;
+    }
+
+    public function getVar($key){
+        return $this->Vars[$key];
+    }
+
+    public function execute(){
+
+        $this->getCtrl();
+        $this->getDo();
+        $this->getAction();
+
+        $this->pathView   = "MVC\\Views\\".$this->ctrl."\\".$this->do;
+        $this->pathCtrl   = "MVC\\Controllers\\".$this->ctrl."\\".$this->do;
+        $this->pathAction = "MVC\\Actions\\".$this->ctrl."\\".$this->do."\\".$this->action.".php";
+        $this->pathJs     = $this->ctrl."\\".$this->do.".js";
+        $this->pathCss    = "MVC\\Css\\".$this->ctrl."\\".$this->do.".css";
+        
+        if(isset($_COOKIE['debug']) && $_COOKIE['debug'] == 1){
+            $this->pathCtrl   = str_replace("/", "\\", $this->pathCtrl);
+            $this->pathView   = str_replace("/", "\\", $this->pathView);
+            echo $this->pathCtrl."<br>";
+            echo $this->pathView."<br>";
+            echo $this->pathAction."<br>";
+            echo $this->pathJs."<br>";
+            echo $this->pathCss."<br>";
+        }
+
+        if(file_exists( $this->Config->get('ROOT_DASHBOARD').$this->pathCtrl.".php")){
+
+            if($this->action != ""){
+                try{
+
+                    require_once $this->Config->get('ROOT_DASHBOARD').$this->pathCtrl.".php";
+                    $this->pathCtrl   = str_replace("/", "\\", $this->pathCtrl);
+                    
+                    if ( class_exists($this->pathCtrl) ) {
+                        call_user_func(array($this->pathCtrl, $this->action));
+                        die();
+                    }
+
+                }catch(\Exception $e){
+                    $Error = new ErrorMsg('Error 404', 'Action not found '.$this->action);
+                    $Error->render();
+                }
+
+            }
+        }
+        
+        if(file_exists($this->Config->get('ROOT_DASHBOARD').$this->pathCss)){
+            echo "<link rel='stylesheet' href='".$this->pathCss."'>";
+        }
+
+        if(file_exists( $this->Config->get('ROOT_DASHBOARD').$this->pathCtrl.".php")){
+            
+            require_once $this->Config->get('ROOT_DASHBOARD').$this->pathCtrl.".php";
+            require_once $this->Config->get('ROOT_DASHBOARD').$this->pathView.".php";
+
+            $this->pathCtrl   = str_replace("/", "\\", $this->pathCtrl);
+            $this->pathView   = str_replace("/", "\\", $this->pathView);
+
+            if ( class_exists($this->pathCtrl) ) {
+
+                $this->pathCtrl   = str_replace("/", "\\", $this->pathCtrl);
+                $controller = new $this->pathCtrl;
+                $controller->Prepare();
+                
+                $view = new $this->pathView;
+                $view->setVars($controller->getVars());
+                $view->prepare();
+                $view->render();
+            }else{
+                $ErrorMsg = new ErrorMsg('Error 404', 'Controller not found '.$this->pathCtrl);
+                $ErrorMsg->render();
+            }
+        }
+        
+        if(file_exists($this->Config->get('ROOT_JS').$this->pathJs)){
+            echo "<script src='".$this->Config->get('URL_JS').$this->pathJs."'></script>";
+        }
+    }
+
 }
 
 ?>

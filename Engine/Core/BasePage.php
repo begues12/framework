@@ -2,6 +2,30 @@
 
 namespace Engine\Core;
 
+require_once "Config.php";
+use Engine\Core\Config;
+
+$Config = new Config();
+
+require_once $Config->get('FILE_BASESQL');
+require_once $Config->get('FILE_BASECONTROLLER');
+require_once $Config->get('FILE_BASEVIEW');
+require_once $Config->get('FILE_ERRORMSG');
+
+use Engine\Core\BaseSQL;
+use Engine\Core\BaseController;
+use Engine\Core\BaseView;
+use Engine\Utils\Widgets\ErrorMsg;
+
+$Config->autoload('ROOT_WIDGETS', 'Navbar');
+$Config->autoload('ROOT_HTML', 'I');
+$Config->autoload('ROOT_HTML', 'A');
+
+use Engine\Utils\Widgets\Navbar;
+use Engine\Utils\HTML\I;
+use Engine\Utils\HTML\A;
+
+
 class BasePage{
 
     public $title;
@@ -20,11 +44,11 @@ class BasePage{
     function __construct(){
         $this->title = "";
         $this->icon = "";
-        $this->ajax = false;
+        $this->ajax = true;
         $this->content = [];
         $this->charset = "utf8mb4";
         $this->lang = "en";
-        $this->bootstrap = false;
+        $this->bootstrap = true;
     }
 
     function setTitle($title){
@@ -94,9 +118,12 @@ class BasePage{
 
         $html .= "</head>";
 
-        $html .= "<body style='height: 100%;'>";
+        $html .= "<body style='height: 85vh;'>";
+
+        $this->Nav();
 
         $html .= $this->buildContent();
+
 
         return $html;
     }
@@ -107,6 +134,56 @@ class BasePage{
         $html .= "</body>";
         $html .= "</html>";
         return $html;
+    }
+
+    /*
+    * Add CSS
+    */
+
+    function Nav(){
+        // Top navbar
+        $NavbarTop = new Navbar();
+        $Page_icon = new I();
+        $NavbarTop->title->text = "Strawberry FW";
+        //Desplegable si es necesario
+        $NavbarTop->class = "navbar navbar-expand-lg navbar-dark bg-dark";
+        $NavbarTop->css = [
+            'height' => '8vh',
+        ];
+
+        // Button menu
+        $NavbarTop_button = new A();
+        $NavbarTop_button->css = [
+            'color' => 'white',
+            'margin-left' => '10px',
+            'font-size' => '15px',
+            'text-decoration' => 'none',
+            'font-weight' => 'bold',
+        ];
+
+        $NavbarTop_button->class = "nav-link";
+        $NavbarTop_button->text = "Menu";
+        $NavbarTop_button->href = "?Ctrl=Menu";
+        $NavbarTop->AddElement($NavbarTop_button->copy());
+
+        $NavbarTop_button->class = "nav-link";
+        $NavbarTop_button->text = "New project";
+        $NavbarTop_button->href = "?Ctrl=NewProject";
+        $NavbarTop->AddElement($NavbarTop_button->copy());
+
+        $NavbarTop_button->class = "nav-link";
+        $NavbarTop_button->text = "Projects";
+        $NavbarTop_button->href = "?Ctrl=Projects";
+        $NavbarTop->AddElement($NavbarTop_button->copy());
+
+        // Documentation
+        $NavbarTop_button->class = "nav-link";
+        $NavbarTop_button->text = "Documentation";
+        $NavbarTop_button->href = "?Ctrl=Documentation";
+        $NavbarTop->AddElement($NavbarTop_button->copy());
+
+        $this->Add($NavbarTop);
+
     }
 
     /**
@@ -143,5 +220,15 @@ class BasePage{
     }
 
 }
+
+####################
+#        ,~~~.     #
+#       (\___/)    #
+#       /_O_O_\    #
+#      {=^___^=}   #
+#       \_/ \_/    #
+#__________________#
+# Github:@Begues12 #
+####################
 
 ?>

@@ -4,7 +4,10 @@ namespace Engine\Utils\Widgets;
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Div.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Ul.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Label.php";
-require_once dirname(__DIR__, 3)."\Engine\Core\BaseUtils.php";
+require_once("Config.php");
+use Engine\Core\Config;
+$Config = new Config();
+require_once $Config->get('FILE_BASEUTILS');
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Li.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\A.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Svg.php";
@@ -29,19 +32,19 @@ class Sidebar extends Div{
 
         //Navbar Div parent
         parent::__construct();
-        $this->class = "d-flex flex-column bg-light text-center";
+        $this->class = "d-flex flex-column bg-light text-center border-right border-secondary";
         $this->id = "navbar";
 
         $this->css = [
-            "width" => "1em",
-            "height" => "100%",
+            "height" => "92vh",
+            'fixed' => 'top',
         ];
 
         $this->content = [];
 
         //Navbar container
         $this->Ul_container = new Ul();
-        $this->Ul_container->class = "nav nav-pills nav-flush flex-column mb-auto text-center";
+        $this->Ul_container->class = "nav flex-column";
         $this->Add($this->Ul_container);
 
     }
@@ -55,7 +58,7 @@ class Sidebar extends Div{
 
         $Navbar_item_div = new Li();
 
-        $Navbar_item_div->class = "navbar-item nav-link border-bottom hover";
+        $Navbar_item_div->class = "navbar-item nav-link hover p-0";
         
         $Navbar_item_div->Add($element);
 

@@ -1,19 +1,23 @@
 <?php
+namespace MVC\Views\Editor;
 
-// Create a new Project in Engine\Projects
-require_once($Config->get('ROOT_CORE')."BasePage.php");
-require_once($Config->get('ROOT_WIDGETS')."Sidebar.php");
-require_once($Config->get('ROOT_HTML')."A.php");
-require_once($Config->get('ROOT_HTML')."I.php");
-require_once($Config->get('ROOT_HTML')."Div.php");
-require_once($Config->get('ROOT_HTML')."Button.php");
-require_once($Config->get('ROOT_HTML')."Label.php");
-require_once($Config->get('ROOT_HTML')."Img.php");
-require_once($Config->get('ROOT_HTML')."Textarea.php");
-require_once($Config->get('ROOT_HTML')."Input.php");
-require_once($Config->get('ROOT_HTML')."IFrame.php");
+use Engine\Core\Config;
 
-use Engine\Core\BasePage;
+$this->Config = new Config();
+
+$this->Config->autoload("ROOT_WIDGETS", "Sidebar");
+$this->Config->autoload("ROOT_WIDGETS", "ErrorMsg");
+
+$this->Config->autoload("ROOT_HTML", "A");
+$this->Config->autoload("ROOT_HTML", "I");
+$this->Config->autoload("ROOT_HTML", "Div");
+$this->Config->autoload("ROOT_HTML", "Button");
+$this->Config->autoload("ROOT_HTML", "Label");
+$this->Config->autoload("ROOT_HTML", "Input");
+$this->Config->autoload("ROOT_HTML", "IFrame");
+
+use Engine\Core\BaseView;
+
 use Engine\Utils\Widgets\Sidebar;
 use Engine\Utils\HTML\A;
 use Engine\Utils\HTML\I;
@@ -23,219 +27,185 @@ use Engine\Utils\HTML\Label;
 use Engine\Utils\HTML\Input;
 use Engine\Utils\HTML\IFrame;
 
-$Content = new Div();
-$Content->css = [
-    'height' => '82vh',
-];
+use Engine\Utils\Widgets\ErrorMsg;
 
-$Title_div = new Div();
-$Title_div->css = [
-    'height' => '4vh',
-];
+class Index extends BaseView{
 
-// Title of the project
-$Title_project_name = new Label();
-$Title_project_name->class = "h3";
-$Title_project_name->css = [
-    'position' => 'fixed',
-    'left' => '1%',
-    'top' => '10vh',
-];
+    /// Objects
+    public $Content;
+    public $Sidebar;
+    public $Editor;
 
-$Title_project_name->text = "Project name";
+    /// Variables
+    public $ProjectName;
 
-if (isset($_GET['Project'])) {
-    $Title_project_name->text = $_GET['Project'];
+    function __construct(){
+        parent::__construct();
+
+        $this->css = [
+            'height' => '92vh',
+        ];
+
+        $this->Content = new Div();
+        $this->Sidebar = new Sidebar();
+        $this->Sidebar->css = [
+            'position' => 'sticky',
+        ];
+        $this->Editor = new Div();
+
+    }
+
+    public function Check(){
+
+        if(isset($_GET['Project'])){
+            $this->ProjectName = $_GET['Project'];
+        }else{
+            $Error = new ErrorMsg("Error", "Project not found");
+            $Error->render();
+        }
+
+    }
+
+    public function Prepare()
+    {
+
+        $this->Check();
+
+        /// Add content to the view
+        $this->Content->class = "content row m-0 p-0";
+        $this->Content->css = [
+            "height" => "100%",
+            "width" => "100%",
+        ];
+
+        /// Add the sidebar to the content
+        $this->Editor->class = "row row-fluid col-12 m-0 p-0";
+
+        $this->Sidebar();
+
+        $this->ViewPages();
+
+        $this->Content->Add($this->Editor);
+
+        $this->Add($this->Content);
+    }
+
+    public function Sidebar(){
+
+        $Button_pageView = new Button();
+        // On mouse hover, the button will change its color
+        $Button_pageView->class = "btn Sidebar_Button rounded-0";
+        $Button_pageView->id = "Sidebar_PageView";
+        $Button_pageView->AddAttribute("title", "Page View");
+        $Button_pageView->AddAttribute("Ctrl", "index");
+        $Button_pageView->AddAttribute("Url", $this->Config->get('URL_PROJECTS').$this->ProjectName."/index.php");
+
+        $Icono_sidebar = new I();
+        $Icono_sidebar->class = "material-icons hover";
+        $Icono_sidebar->text = "restore_page";
+
+        /// Add the icon to the button
+        $Button_pageView->Add($Icono_sidebar->copy());
+        $this->Sidebar->AddElement($Button_pageView);
+
+        $Button_Files = new Button();
+        $Button_Files->class = "btn Sidebar_Button rounded-0";
+        $Button_Files->id = "Sidebar_Files";
+        $Button_Files->AddAttribute("title", "Files");
+        $Button_Files->AddAttribute("Ctrl", "index");
+        $Button_Files->AddAttribute("ProjectName", $this->ProjectName);
+        $Button_Files->AddAttribute("Url", $this->Config->get('URL_IMPORT_MVC_CALLABLE')."?Ctrl=Editor\ProjectFiles");
+        $Button_Files->AddAttribute("ProjectPath", $this->Config->get('ROOT_PROJECT').$this->ProjectName);
+
+        $Icono_sidebar = new I();
+        $Icono_sidebar->class = "material-icons hover";
+        $Icono_sidebar->text = "folder";
+
+        $Button_Files->Add($Icono_sidebar->copy());
+        $this->Sidebar->AddElement($Button_Files);
+
+        // Objects button
+        $Button_Objects = new Button();
+        $Button_Objects->class = "btn Sidebar_Button rounded-0";
+        $Button_Objects->id = "Sidebar_Objects";
+        $Button_Objects->AddAttribute("title", "ProjectObjects");
+        $Button_Objects->AddAttribute("Url", $this->Config->get('URL_IMPORT_MVC_CALLABLE')."?Ctrl=Editor\ProjectObjects");
+        $Button_Objects->AddAttribute("ProjectName", $this->ProjectName);
+
+        $Icono_sidebar = new I();
+        $Icono_sidebar->class = "material-icons hover";
+        $Icono_sidebar->text = "bubble_chart";
+
+        $Button_Objects->Add($Icono_sidebar->copy());
+        $this->Sidebar->AddElement($Button_Objects);
+
+        // Configurations button
+        $Button_config = new Button();
+        $Button_config->class = "btn Sidebar_Button rounded-0";
+        $Button_config->id = "Sidebar_Config";
+        $Button_config->AddAttribute("title", "Configurations");
+        $Button_config->AddAttribute("Url", $this->Config->get('URL_IMPORT_MVC_CALLABLE')."?Ctrl=Editor\ProjectConfig");
+        $Button_config->AddAttribute("ProjectName", $this->ProjectName);
+
+        $Icono_sidebar = new I();
+        $Icono_sidebar->class = "material-icons hover m-0 p-0";
+        $Icono_sidebar->text = "settings";
+
+        $Button_config->Add($Icono_sidebar->copy());
+        $this->Sidebar->AddElement($Button_config);
+
+        $this->Editor->Add($this->Sidebar);
+
+    }
+
+    private function ViewPages(){
+        
+        $PageView_IFrame = new IFrame();
+        $PageView_IFrame->class = "col m-0 p-0 PageView";
+        $PageView_IFrame->id = "PageView_IFrame";
+        $PageView_IFrame->AddAttribute("Url", $this->Config->get('URL_PROJECTS').$_GET['Project']."/index.php");
+        $PageView_IFrame->AddAttribute("Ctrl", 'Menu');
+        $PageView_IFrame->src = $this->Config->get('URL_PROJECTS').$_GET['Project']."/index.php";
+        $PageView_IFrame->AddAttribute("frameborder", "1");
+        $PageView_IFrame->css = [
+            'overflow' => 'auto',
+            'height' => '90vh',
+        ];
+        $this->Editor->Add($PageView_IFrame);
+
+        $PageView_ProjectFiles = new Div();
+        $PageView_ProjectFiles->class = "col m-0 p-0 PageView";
+        $PageView_ProjectFiles->id = "PageView_ProjectFiles";
+        $PageView_ProjectFiles->AddAttribute("Url", $this->Config->get('ROOT_DASHBOARD').$_GET['Project']."/index.php");
+        $PageView_ProjectFiles->AddAttribute("ProjectName", $_GET['Project']);
+        $PageView_ProjectFiles->css = [
+            'overflow' => 'auto',
+            'display' => 'none'
+        ];
+        $this->Editor->Add($PageView_ProjectFiles);
+
+        $PageView_ProjectObjects = new Div();
+        $PageView_ProjectObjects->class = "col m-0 p-0 PageView";
+        $PageView_ProjectObjects->id = "PageView_ProjectObjects";
+        $PageView_ProjectObjects->css = [
+            'overflow' => 'auto',
+            'display' => 'none',
+            'height' => '90vh',
+        ];
+        $this->Editor->Add($PageView_ProjectObjects);
+
+        $PageView_ProjectConfig = new Div();
+        $PageView_ProjectConfig->class = "col p-0 PageView";
+        $PageView_ProjectConfig->id = "PageView_ProjectConfig";
+        $PageView_ProjectConfig->css = [
+            'overflow' => 'auto',
+            'display' => 'none',
+            'height' => '90vh',
+        ];
+
+        $this->Editor->Add($PageView_ProjectConfig);
+    }
+
 }
-
-$Title_div->Add($Title_project_name);
-
-$Content->Add($Title_div);
-
-// Sidebar
-$Sidebar = new Sidebar();
-$Sidebar->class = "p-0 m-0";
-// Fix in left
-$Sidebar->css = [
-    'position' => 'fixed',
-    'left' => '0',
-    'top' => '17vh',
-];
-
-$ProjectName = "";
-
-if(isset($_GET['Project'])){
-    $ProjectName = $_GET['Project'];
-}
-
-$Editor = new Div();
-$Editor->class = "p-0 row m-0";
-// Fix in middle
-$Editor->css = [
-    'position' => 'fixed',
-    'left' => '10%',
-    'top' => '0vh',
-    'width' => '100%',
-    'height' => '85vh',
-];
-
-/// Add the buttons to the sidebar
-
-// Page view button
-$Button_pageView = new Button();
-// On mouse hover, the button will change its color
-$Button_pageView->class = "btn Sidebar_Button";
-$Button_pageView->id = "Sidebar_PageView";
-$Button_pageView->AddAttribute("title", "Page View");
-$Button_pageView->AddAttribute("Ctrl", "index");
-$Button_pageView->AddAttribute("Url", $Config->get('URL_PROJECTS').$ProjectName."/index.php");
-
-$Icono_sidebar = new I();
-$Icono_sidebar->class = "material-icons hover";
-$Icono_sidebar->text = "restore_page";
-
-/// Add the icon to the button
-$Button_pageView->Add($Icono_sidebar->copy());
-$Sidebar->AddElement($Button_pageView);
-
-$Button_Files = new Button();
-$Button_Files->class = "btn Sidebar_Button";
-$Button_Files->id = "Sidebar_Files";
-$Button_Files->AddAttribute("title", "Files");
-$Button_Files->AddAttribute("Ctrl", "index");
-$Button_Files->AddAttribute("ProjectName", $ProjectName);
-$Button_Files->AddAttribute("Url", $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectFiles");
-$Button_Files->AddAttribute("ProjectPath", $Config->get('ROOT_PROJECT').$ProjectName);
-
-$Icono_sidebar = new I();
-$Icono_sidebar->class = "material-icons hover";
-$Icono_sidebar->text = "folder";
-
-$Button_Files->Add($Icono_sidebar->copy());
-$Sidebar->AddElement($Button_Files);
-
-// Objects button
-$Button_Objects = new Button();
-$Button_Objects->class = "btn Sidebar_Button";
-$Button_Objects->id = "Sidebar_Objects";
-$Button_Objects->AddAttribute("title", "ProjectObjects");
-$Button_Objects->AddAttribute("Url", $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectObjects");
-$Button_Objects->AddAttribute("ProjectName", $ProjectName);
-
-$Icono_sidebar = new I();
-$Icono_sidebar->class = "material-icons hover";
-$Icono_sidebar->text = "bubble_chart";
-
-$Button_Objects->Add($Icono_sidebar->copy());
-$Sidebar->AddElement($Button_Objects);
-
-// Configurations button
-$Button_config = new Button();
-$Button_config->class = "btn Sidebar_Button";
-$Button_config->id = "Sidebar_Config";
-$Button_config->AddAttribute("title", "Configurations");
-$Button_config->AddAttribute("Url", $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectConfig");
-$Button_config->AddAttribute("ProjectName", $ProjectName);
-
-$Icono_sidebar = new I();
-$Icono_sidebar->class = "material-icons hover m-0 p-0";
-$Icono_sidebar->text = "settings";
-
-$Button_config->Add($Icono_sidebar->copy());
-$Sidebar->AddElement($Button_config);
-
-$Editor->Add($Sidebar);
-
-$PageView_IFrame = new IFrame();
-$PageView_IFrame->class = "container-fluid col-10 m-4 border border-dark PageView";
-$PageView_IFrame->id = "PageView_IFrame";
-$PageView_IFrame->AddAttribute("Url", $Config->get('URL_PROJECTS').$_GET['Project']."/index.php");
-$PageView_IFrame->AddAttribute("Ctrl", 'Menu');
-$PageView_IFrame->src = $Config->get('URL_PROJECTS').$_GET['Project']."/index.php";
-$PageView_IFrame->AddAttribute("frameborder", "1");
-$PageView_IFrame->css = [
-    'height' => '82vh',
-    'right' => '0',
-    'top' => '13vh',
-    'overflow' => 'auto'
-];
-$Editor->Add($PageView_IFrame);
-
-$PageView_ProjectFiles = new Div();
-$PageView_ProjectFiles->class = "container-fluid col-10 m-2 p-0 border border-dark PageView";
-$PageView_ProjectFiles->id = "PageView_ProjectFiles";
-$PageView_ProjectFiles->AddAttribute("Url", $Config->get('URL_IMPORT_MVC').$_GET['Project']."/index.php");
-$PageView_ProjectFiles->AddAttribute("ProjectName", $_GET['Project']);
-$PageView_ProjectFiles->css = [
-    'height' => '82vh',
-    'right' => '0',
-    'top' => '13vh',
-    'overflow' => 'auto',
-    'display' => 'none'
-];
-$Editor->Add($PageView_ProjectFiles);
-
-$PageView_ProjectObjects = new Div();
-$PageView_ProjectObjects->class = "container-fluid col-10 m-2 p-0 border border-dark PageView";
-$PageView_ProjectObjects->id = "PageView_ProjectObjects";
-$PageView_ProjectObjects->css = [
-    'height' => '82vh',
-    'right' => '0',
-    'top' => '13vh',
-    'overflow' => 'auto',
-    'display' => 'none'
-];
-$Editor->Add($PageView_ProjectObjects);
-
-$PageView_ProjectConfig = new Div();
-$PageView_ProjectConfig->class = "container-fluid col-10 m-2 p-0 border border-dark PageView";
-$PageView_ProjectConfig->id = "PageView_ProjectConfig";
-$PageView_ProjectConfig->css = [
-    'height' => '82vh',
-    'right' => '0',
-    'top' => '13vh',
-    'overflow' => 'auto',
-    'display' => 'none'
-];
-$Editor->Add($PageView_ProjectConfig);
-
-$Sidebar_Attributes = new Sidebar();
-$Sidebar_Attributes->class = "col-2 p-0 border border-dark";
-$Sidebar_Attributes->id = "Sidebar_Attributes";
-$Sidebar_Attributes->css = [
-    'position' => 'fixed',
-    'height' => '82vh',
-    'right' => '0',
-    'top' => '17vh',
-    'overflow' => 'auto'
-];
-
-
-// Get settings from the database
-$Settings = new Div();
-$Settings->class = "p-0 m-0";
-$Settings->id = "Settings";
-
-$Label_placeholder = new Div();
-$Label_placeholder->class = "container-fluid p-0 m-0";
-$Label_placeholder->id = "Label_placeholder";
-$Label_placeholder->text = "Settings Object";
-
-$Input_placeholder = new Input();
-$Input_placeholder->class = "container-fluid p-0 m-0";
-$Input_placeholder->id = "Input_placeholder";
-$Input_placeholder->type = "text";
-$Input_placeholder->value = "Settings Object";
-
-$Settings->Add($Label_placeholder);
-$Settings->Add($Input_placeholder);
-
-$Sidebar_Attributes->AddElement($Settings);
-
-// $Editor->Add($Sidebar_Attributes);
-
-$Content->Add($Editor);
-
-$Content->render();
 
 ?>

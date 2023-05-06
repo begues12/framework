@@ -8,7 +8,10 @@ require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Li.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Ol.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\A.php";
 require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Span.php";
-require_once dirname(__DIR__, 3)."\Engine\Core\BaseUtils.php";
+require_once("Config.php");
+use Engine\Core\Config;
+$Config = new Config();
+require_once $Config->get('FILE_BASEUTILS');
 
 use Engine\Utils\HTML\Div;
 use Core\BaseUtils;

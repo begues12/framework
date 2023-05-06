@@ -1,32 +1,59 @@
 <?php
 
-$XML_PATH = "";
-$ID_FIELD = "";
+require_once 'Config.php';
+use Engine\Core\Config;
 
-if (isset($_POST['XML_FILE'])) {
-    $XML_PATH = $_POST['XML_FILE'];
+$Config = new Config();
+
+require_once($Config->get('ROOT_CORE')."BaseSQL.php");
+use Engine\Core\BaseSQL;
+
+require_once($Config->get('ROOT_WIDGETS')."ErrorMsg.php");
+use Engine\Utils\Widgets\ErrorMsg;
+
+require_once($Config->get('ROOT_WIDGETS')."SuccessMsg.php");
+use Engine\Utils\Widgets\SuccessMsg;
+
+$Field = "";
+$Table = "";
+$ProjectName = "";
+
+if (isset($_POST['Field']) && $_POST['Field'] != "") {
+    $Field = $_POST['Field'];
+}else{
+    $ErrorMsg = new ErrorMsg("Error", "Field name is not set");
+    $ErrorMsg->render();
+    die();
 }
 
-if (isset($_POST['IdField'])) {
-    $ID_FIELD = $_POST['IdField'];
+if (isset($_POST['Table']) && $_POST['Table'] != "") {
+    $Table = $_POST['Table'];
+}else{
+    $ErrorMsg = new ErrorMsg("Error", "Table name is not set");
+    $ErrorMsg->render();
+    die();
 }
-echo $XML_PATH;
-if ($XML_PATH != "" && $ID_FIELD != "") {
 
-    $xml = new SimpleXMLElement($XML_PATH, 0, true);
-    
-    if ($xml === false) {
-        echo "No se pudo cargar el archivo XML";
-    } else {
-        
-        foreach ($xml->xpath("//Field[@id='$ID_FIELD']") as $field) {
-            unset($field[0]);
-        }
-
-        $xml->asXML($XML_PATH);
-        echo "Campo eliminado correctamente del archivo XML";
-    }
-} else {
-    echo "Error en los parámetros";
+if (isset($_POST['ProjectName']) && $_POST['ProjectName'] != "") {
+    $ProjectName = $_POST['ProjectName'];
+}else{
+    $ErrorMsg = new ErrorMsg("Error", "Project name is not set");
+    $ErrorMsg->render();
+    die();
 }
+
+$BaseSQL = new BaseSQL($ProjectName);
+
+$BaseSQL->alterTable($Table, "DROP COLUMN", $Field);
+
+$BaseSQL->Apply();
+
+if ($BaseSQL->OK()){
+    $SuccessMsg = new SuccessMsg("Success", "Field deleted successfully");
+    $SuccessMsg->render();
+}else{
+    $ErrorMsg = new ErrorMsg("Error", "Field not deleted");
+    $ErrorMsg->render();
+}
+
 ?>
