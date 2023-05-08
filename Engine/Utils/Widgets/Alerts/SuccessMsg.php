@@ -1,6 +1,6 @@
 <?php
 
-namespace Engine\Utils\Widgets;
+namespace Engine\Utils\Widgets\Alerts;
 
 require_once "Config.php";
 use Engine\Core\Config;
@@ -22,7 +22,7 @@ use Engine\Utils\HTML\Span;
 use Engine\Utils\HTML\Button;
 use Engine\Utils\HTML\I;
 
-class ErrorMsg extends Div{
+class SuccessMsg extends Div{
 
     public $Icon;
     public $Title;
@@ -33,14 +33,14 @@ class ErrorMsg extends Div{
         parent::__construct();
 
         // Fix in top center
-        $this->class = "alert alert-danger alert-dismissible fade show border border-danger border-3 rounded";
-        $this->id = "ErrorMsg";
+        $this->class = "alert alert-success alert-dismissible fade show";
+        $this->id = "SuccessMsg";
         $this->AddAttribute("role", "alert");
 
         // In center of screen 
         $this->css = [
             "position" => "fixed",
-            "top" => "8vh",
+            "top" => "70px",
             "left" => "50%",
             "transform" => "translate(-50%, -50%)",
             "z-index" => "100000"
@@ -54,7 +54,7 @@ class ErrorMsg extends Div{
 
         $this->Icon = new I();
         $this->Icon->class = "material-icons d-inline mr-1 align-middle";
-        $this->Icon->text = "error";
+        $this->Icon->text = "check_circle";
 
         $this->Title = new Label();
         $this->Title->class = "font-weight-bold d-inline mb-2 align-middle";
@@ -62,7 +62,6 @@ class ErrorMsg extends Div{
 
         $this->Message = new Span();
         $this->Message->text = $Message;
-
 
         $this->Add($Div);
         $Div->Add($this->Icon);
@@ -72,19 +71,14 @@ class ErrorMsg extends Div{
         $this->AddAttribute("style", "margin-top: 10px;");
 
         $CloseButton = new Button();
-        $CloseButton->class = "close p-1";
-
-        $CloseHidden = new Span();
-        $CloseHidden->AddAttribute("aria-hidden", "true");
-        $CloseHidden->text = "&times;";
-
+        $CloseButton->class = "close material-icons p-1";
+        $CloseButton->text = "close";
         $CloseButton->AddAttribute("data-dismiss", "alert");
+        $CloseButton->AddAttribute("aria-label", "Close");
 
-        $CloseButton->Add($CloseHidden);
         $this->Add($CloseButton);
 
-        $this->Js("Utils/Widgets/ErrorMsg.js");
-
+        $this->Js("Utils/Widgets/SuccessMsg.js");
 
     }
 

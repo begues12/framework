@@ -402,6 +402,18 @@ class BaseUtils{
         return $this->build();
     }
 
+    function AddClass(String $class){
+        $this->class .= " ".$class;
+    }
+
+    function DeleteClass(String $class){
+        $this->class = str_replace($class, '', $this->class);
+    }
+
+    function AddStyle(String $style, String $value){
+        $this->css[$style] = $value;
+    }
+
     /*
      * @return void
      * @desc Render the element

@@ -6,7 +6,7 @@ use Engine\Core\Config;
 $this->Config = new Config();
 
 $this->Config->autoload("ROOT_WIDGETS", "Sidebar");
-$this->Config->autoload("ROOT_WIDGETS", "ErrorMsg");
+$this->Config->autoload("FILE_ERRORMSG");
 
 $this->Config->autoload("ROOT_HTML", "A");
 $this->Config->autoload("ROOT_HTML", "I");
@@ -15,6 +15,7 @@ $this->Config->autoload("ROOT_HTML", "Button");
 $this->Config->autoload("ROOT_HTML", "Label");
 $this->Config->autoload("ROOT_HTML", "Input");
 $this->Config->autoload("ROOT_HTML", "IFrame");
+$this->Config->autoload("ROOT_WIDGETS", "Alerts\ErrorMsg");
 
 use Engine\Core\BaseView;
 
@@ -27,7 +28,7 @@ use Engine\Utils\HTML\Label;
 use Engine\Utils\HTML\Input;
 use Engine\Utils\HTML\IFrame;
 
-use Engine\Utils\Widgets\ErrorMsg;
+use Engine\Utils\Widgets\Alerts\ErrorMsg;
 
 class Index extends BaseView{
 
@@ -43,7 +44,7 @@ class Index extends BaseView{
         parent::__construct();
 
         $this->css = [
-            'height' => '92vh',
+            'height' => '90vh',
         ];
 
         $this->Content = new Div();
@@ -129,8 +130,8 @@ class Index extends BaseView{
         $Button_Objects->class = "btn Sidebar_Button rounded-0";
         $Button_Objects->id = "Sidebar_Objects";
         $Button_Objects->AddAttribute("title", "ProjectObjects");
-        $Button_Objects->AddAttribute("Url", $this->Config->get('URL_IMPORT_MVC_CALLABLE')."?Ctrl=Editor\ProjectObjects");
-        $Button_Objects->AddAttribute("ProjectName", $this->ProjectName);
+        $Button_Objects->AddAttribute("data-url", $this->Config->get('URL_DASHBOARD')."?Ctrl=Editor\ProjectObjects&Do=Index");
+        $Button_Objects->AddAttribute("data-projectname", $this->ProjectName);
 
         $Icono_sidebar = new I();
         $Icono_sidebar->class = "material-icons hover";
@@ -165,8 +166,8 @@ class Index extends BaseView{
         $PageView_IFrame->id = "PageView_IFrame";
         $PageView_IFrame->AddAttribute("Url", $this->Config->get('URL_PROJECTS').$_GET['Project']."/index.php");
         $PageView_IFrame->AddAttribute("Ctrl", 'Menu');
-        $PageView_IFrame->src = $this->Config->get('URL_PROJECTS').$_GET['Project']."/index.php";
         $PageView_IFrame->AddAttribute("frameborder", "1");
+        $PageView_IFrame->src = $this->Config->get('URL_PROJECTS').$_GET['Project']."/index.php";
         $PageView_IFrame->css = [
             'overflow' => 'auto',
             'height' => '90vh',
@@ -177,7 +178,7 @@ class Index extends BaseView{
         $PageView_ProjectFiles->class = "col m-0 p-0 PageView";
         $PageView_ProjectFiles->id = "PageView_ProjectFiles";
         $PageView_ProjectFiles->AddAttribute("Url", $this->Config->get('ROOT_DASHBOARD').$_GET['Project']."/index.php");
-        $PageView_ProjectFiles->AddAttribute("ProjectName", $_GET['Project']);
+        $PageView_ProjectFiles->AddAttribute("data-projectname", $_GET['Project']);
         $PageView_ProjectFiles->css = [
             'overflow' => 'auto',
             'display' => 'none'

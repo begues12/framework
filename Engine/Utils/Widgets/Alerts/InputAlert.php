@@ -1,6 +1,6 @@
 <?php
 
-namespace Engine\Utils\Widgets;
+namespace Engine\Utils\Widgets\Alerts;
 
 require_once "Config.php";
 use Engine\Core\Config;
@@ -63,7 +63,7 @@ class InputAlert extends Div{
         // In center of screen 
         $this->Container->css = [
             "position" => "fixed",
-            "top" => "25vh",
+            "top" => "70px",
             "left" => "50%",
             "transform" => "translate(-50%, -50%)",
             "z-index" => "100000"
@@ -117,13 +117,13 @@ class InputAlert extends Div{
         $this->SubmitButton->class = "btn btn-success material-icons";
         $this->SubmitButton->text = "check";
         $this->SubmitButton->id = "submit_".$Id;
-        $this->SubmitButton->onclick = "AjaxAddField(this)";
         $this->SubmitButton->css = [
             "border-top-left-radius" => "0",
             "border-bottom-left-radius" => "0"
         ];
         $this->SubmitButton->AddAttribute("father", 'Alert_'.$Id);
         $this->SubmitButton->AddAttribute("input", $this->Input->id);
+
         // Close the alert when the button is clicked
 
 
@@ -140,7 +140,21 @@ class InputAlert extends Div{
         
     }
 
+    function OnSubmit(String $action){
+        $this->SubmitButton->onclick = $action;
+    }
 
+    /*
+    *
+    */
+
+    function Data(Array $Data){
+
+        foreach($Data as $Key => $Value){
+            $this->SubmitButton->AddAttribute("data-".$Key, $Value);
+        }
+
+    }
 
 }
 

@@ -265,7 +265,7 @@ class BaseSQL{
         ?array $fk = null
     ): string {
         $columnsInfo = $this->showColumns($table)[0]['Rows'];
-        echo $pk."------------------";
+
         foreach ($columnsInfo as $columnInfo) {
             if ($columnInfo['Key'] === 'PRI' && $pk == true) {
                 $this->query("ALTER TABLE $table DROP PRIMARY KEY");

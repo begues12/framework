@@ -10,16 +10,16 @@ $Config = new Config();
 require_once $Config->get('FILE_BASESQL');
 require_once $Config->get('FILE_BASECONTROLLER');
 require_once $Config->get('FILE_BASEVIEW');
-require_once $Config->get('FILE_ERRORMSG');
+
 
 use Engine\Core\BaseSQL;
 use Engine\Core\BaseController;
 use Engine\Core\BaseView;
-use Engine\Utils\Widgets\ErrorMsg;
 
-$Config->autoload('ROOT_WIDGETS', 'Navbar');
-$Config->autoload('ROOT_HTML', 'I');
-$Config->autoload('ROOT_HTML', 'A');
+require_once $Config->get('ROOT_WIDGETS')."Navbar.php";
+require_once $Config->get('ROOT_HTML')."I.php";
+require_once $Config->get('ROOT_HTML')."A.php";
+
 
 use Engine\Utils\Widgets\Navbar;
 use Engine\Utils\HTML\I;
@@ -109,7 +109,6 @@ class BasePage{
 
         if ($this->bootstrap) {
             $html .= "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'/>";
-            $html .= "<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js'></script>";
             $html .= "<script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>";
             $html .= "<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>";
             // JQuery bootstrap

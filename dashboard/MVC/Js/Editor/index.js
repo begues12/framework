@@ -70,11 +70,11 @@ $(document).ready(function () {
 function LoadProjectObject(Element){
     $.ajax({
         // Get attributes url
-        url: Element.getAttribute('Url'),
+        url: Element.getAttribute('data-url'),
         type: 'POST',
         cache: false,
         data : {
-            ProjectName : Element.getAttribute('ProjectName'),
+            'data-projectname' : Element.getAttribute('data-projectname'),
         },
         success: function (data) {
             SetColorSidebar_Button($('#Sidebar_Objects'));

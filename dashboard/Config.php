@@ -62,7 +62,7 @@ class Config{
 
 
             ///Files Utils
-            'FILE_ERRORMSG'     => $this->basePath."/Engine/Utils/Widgets/ErrorMsg.php",
+            'FILE_ERRORMSG'     => $this->basePath."/Engine/Utils/Widgets/Alerts/ErrorMsg.php",
 
             // Files URL
             'URL_FILE_BASEUTILS'    => $this->basePath."/Engine/Core/BaseUtils.php",

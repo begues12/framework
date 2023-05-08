@@ -20,7 +20,8 @@ require_once $Config->get('ROOT_HTML')."Table.php";
 require_once $Config->get('ROOT_HTML')."Tr.php";
 require_once $Config->get('ROOT_HTML')."Td.php";
 require_once $Config->get('ROOT_HTML')."Nav.php";
-require_once $Config->get('ROOT_WIDGETS')."FieldTrBd.php";
+require_once $Config->get('ROOT_WIDGETS')."ProjectObjects/FieldTrBd.php";
+require_once $Config->get('ROOT_WIDGETS')."Actionbar.php";
 
 use Engine\Core\BaseView;
 
@@ -36,30 +37,32 @@ use Engine\Utils\HTML\Table;
 use Engine\Utils\HTML\Tr;
 use Engine\Utils\HTML\Td;
 use Engine\Utils\HTML\Nav;
-use Engine\Utils\Widgets\FieldTrBd;
+use Engine\Utils\Widgets\ProjectObjects\FieldTrBd;
+use Engine\Utils\Widgets\Actionbar;
 
 
 class Edit extends BaseView{
 
-    public $ProjectName;
-    public $Tables;
+    public $data_projectname;
+    public $data_table;
+    public $data_fields;
+    public $Input_Table;
 
     function __construct(){
         parent::__construct();
-
         $this->class = "p-2";
+
     }
 
     public function Prepare()
     {
 
-        $this->ProjectName = $this->getVar('ProjectName');
-        
-        /* Title */
-        $Label_Title_Editor = new Label();
-        $Label_Title_Editor->class = "form-control-label font-weight-bold h3 border-bottom d-block .";
-        $Label_Title_Editor->text = "Object Editor";
-        $this->Add($Label_Title_Editor);
+        $this->data_projectname = $this->getVar('data-projectname');
+        $this->data_table       = $this->getVar('data-table');
+        $this->data_fields      =  $this->getVar('data-fields')[0]['Rows'];
+
+        $this->SetTitle("Edit Objects");
+        $this->SetReturn("Project Objects", "Sidebar_Objects");
 
         /* Table Name */
         $Label_Table = new Label();
@@ -71,7 +74,7 @@ class Edit extends BaseView{
         $Input_Table->class = "form-control d-block  ml-3 mr-3";
         $Input_Table->css = ['width' => '300px'];
         $Input_Table->name = "Object_Table";
-        $Input_Table->value = $this->getVar('Object');
+        $Input_Table->value = $this->data_table;
         $Input_Table->AddAttribute("readonly", "readonly");
 
         $this->Add($Label_Table);
@@ -86,21 +89,21 @@ class Edit extends BaseView{
         $Div_Fields = new Div();
         $Div_Fields->class = "form-group m-3";
         
-        $Label_Fields = new Label();
-        $Label_Fields->class = "form-control-label d-block h4 font-weight-bold";
-        $Label_Fields->text = "Fields";
-        
-        $Div_Fields->Add($Label_Fields);
-        
+        $Actionbar = new Actionbar();
+
+        $Actionbar->setTitle("Fields");
+
         $Button_AddField = new Button();
-        $Button_AddField->class = "btn btn-primary ml-auto mb-3";
-        $Button_AddField->onclick = "AddField(this);";
-        $Button_AddField->text = "Add Field";
-        $Button_AddField->AddAttribute("URL", $this->Config->get("URL_DASHBOARD"));
-        $Button_AddField->AddAttribute("ProjectName", $this->ProjectName);
-        $Button_AddField->AddAttribute("Table", $this->getVar('Object'));
+        $Button_AddField->class = "btn material-icons bg-transparent m-0 ";
+        $Button_AddField->onclick = "AlertInput_AddField(this);";
+        $Button_AddField->text = "add";
+        $Button_AddField->AddAttribute("data-url", $this->Config->get("URL_DASHBOARD"));
+        $Button_AddField->AddAttribute("data-projectname", $this->data_projectname);
+        $Button_AddField->AddAttribute("data-table", $this->data_table);
         
-        $Div_Fields->Add($Button_AddField);
+        $Actionbar->AddElement($Button_AddField);
+
+        $Div_Fields->Add($Actionbar);
         
         $this->Add($Div_Fields);
 
@@ -128,9 +131,9 @@ class Edit extends BaseView{
         
         $Table_Field_header->Add($Tr_Field_header);
         
-        foreach( $this->getVar('Fields')[0]['Rows'] as $index => $Field ) {
+        foreach( $this->data_fields as $index => $Field ) {
 
-            $Tr_Field = new FieldTrBd($this->ProjectName, $index, $Field['Field']);
+            $Tr_Field = new FieldTrBd($this->data_projectname, $this->data_table, $index, $Field['Field']);
 
             $Tr_Field->setTypeValue(explode("(", $Field['Type'])[0]);
             $Tr_Field->setLengthValue(explode("(", str_replace(")","",$Field['Type']))[1]);

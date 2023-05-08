@@ -1,6 +1,6 @@
 <?php
 
-namespace Engine\Utils\Widgets;
+namespace Engine\Utils\Widgets\Alerts;
 
 require_once "Config.php";
 use Engine\Core\Config;
@@ -35,14 +35,14 @@ class ConfirmDeleteMsg extends Div{
         parent::__construct();
 
         // Fix in top center
-        $this->class = "alert alert-dark alert-dismissible fade show";
-        $this->id = "ConfirmDeleteMsg_".$Id."";
+        $this->class = "alert alert-dark alert-dismissible fade show pl-3 pr-3 pt-4";
+        $this->id = "ConfirmDeleteMsg";
         $this->AddAttribute("role", "alert");
 
         // In center of screen 
         $this->css = [
             "position" => "fixed",
-            "top" => "8vh",
+            "top" => "70px",
             "left" => "50%",
             "transform" => "translate(-50%, -50%)",
             "z-index" => "100000"
@@ -78,22 +78,26 @@ class ConfirmDeleteMsg extends Div{
         $this->ConfirmDeleteButton = new Button();
         $this->ConfirmDeleteButton->class = "btn btn-danger btn-sm float-right";
         $this->ConfirmDeleteButton->text = "Delete";
-        $this->ConfirmDeleteButton->AddAttribute("onclick", "DeleteObject(this);");
+        $this->ConfirmDeleteButton->id = "ConfirmDeleteButton";
 
         $DivButtons->Add($this->ConfirmDeleteButton);
 
         $this->Add($DivButtons);
 
+        $this->Js("Utils/Widgets/ConfirmDeleteMsg.js");
+
+    }
+    function OnSubmit(String $action){
+        $this->ConfirmDeleteButton->onclick = $action;
     }
 
-    public function AddSendData(Array $Data){
+    function Data(Array $Data){
 
         foreach($Data as $Key => $Value){
             $this->ConfirmDeleteButton->AddAttribute("data-".$Key, $Value);
         }
 
     }
-
 }
 
 ?>

@@ -9,20 +9,26 @@ $Config = new Config();
 //Load all HTML widgets
 require_once $Config->get('FILE_BASESQL');
 require_once $Config->get('FILE_BASECONTROLLER');
-require_once($Config->get('ROOT_WIDGETS')."ErrorMsg.php");
-require_once($Config->get('ROOT_WIDGETS')."SuccessMsg.php");
-require_once $Config->get('ROOT_WIDGETS')."InputAlert.php";
+require_once($Config->get('ROOT_WIDGETS')."Alerts\ErrorMsg.php");
+require_once($Config->get('ROOT_WIDGETS')."Alerts\ConfirmDeleteMsg.php");
+require_once($Config->get('ROOT_WIDGETS')."Alerts\SuccessMsg.php");
+require_once $Config->get('ROOT_WIDGETS')."Alerts\InputAlert.php";
+require_once $Config->get('ROOT_WIDGETS')."ProjectObjects/FieldTrBd.php";
 
 use Engine\Core\BaseSQL;
 use Engine\Core\BaseController;
-use Engine\Utils\Widgets\ErrorMsg;
-use Engine\Utils\Widgets\SuccessMsg;
-use Engine\Utils\Widgets\InputAlert;
+use Engine\Utils\Widgets\Alerts\ConfirmDeleteMsg;
+use Engine\Utils\Widgets\Alerts\ErrorMsg;
+use Engine\Utils\Widgets\Alerts\SuccessMsg;
+use Engine\Utils\Widgets\Alerts\InputAlert;
+use Engine\Utils\Widgets\ProjectObjects\FieldTrBd;
+use Error;
+use Exception;
 
 class Edit extends BaseController{
 
-    public $ProjectName;
-    public $Object;
+    public $data_projectname;
+    public $data_table;
     public $Fields;
     public $BaseSQL;
 
@@ -33,16 +39,16 @@ class Edit extends BaseController{
     public function Prepare()
     {
 
-        if (isset($_POST['ProjectName']) && isset($_POST['Object'])) {
-            $this->ProjectName = $_POST['ProjectName'];
-            $this->Object = $_POST['Object'];
-            $this->BaseSQL = new BaseSQL($this->ProjectName);
+        if (isset($_POST['data-projectname']) && isset($_POST['data-table'])) {
+            $this->data_projectname = $_POST['data-projectname'];
+            $this->data_table = $_POST['data-table'];
+            $this->BaseSQL = new BaseSQL($this->data_projectname);
             
-            $Fields = $this->BaseSQL->getFields($this->Object);
+            $Fields = $this->BaseSQL->getFields($this->data_table);
 
-            $this->setVar('ProjectName', $this->ProjectName);
-            $this->setVar('Object', $this->Object);
-            $this->setVar('Fields', $Fields);
+            $this->setVar('data-projectname', $this->data_projectname);
+            $this->setVar('data-table', $this->data_table);
+            $this->setVar('data-fields', $Fields);
 
         }else{
             $ErrorMsg = new ErrorMsg("Error", "Project name is not set");
@@ -50,10 +56,6 @@ class Edit extends BaseController{
             die();
         }
 
-    }
-
-    public function Execute()
-    {
     }
 
     public function Finalize()
@@ -63,10 +65,10 @@ class Edit extends BaseController{
     static public function EditField()
     {
         
-        $ProjectName = "";
-        $Table = "";
+        $data_projectname = "";
+        $data_table = "";
         
-        $Fields = ["Name", "Type", "Length", "AI", "Default", "Pk", "Unique", "Null"];
+        $Fields = ["data-name", "data-type", "data-length", "data-ai", "data-default", "data-pk", "data-unique", "data-null"];
 
         $FieldsValue = array();
 
@@ -74,22 +76,22 @@ class Edit extends BaseController{
             if (isset($_POST[$Field])) {
                 $FieldsValue[$Field] = $_POST[$Field];
             }else{
-                $ErrorMsg = new ErrorMsg("Error", $Field." is not set");
+                $ErrorMsg = new ErrorMsg('Data not found', $Field." not found");
                 $ErrorMsg->render();
                 die();
             }
         }
 
-        if (isset($_POST['ProjectName'])) {
-            $ProjectName = $_POST['ProjectName'];
+        if (isset($_POST['data-projectname'])) {
+            $data_projectname = $_POST['data-projectname'];
         }else{
             $ErrorMsg = new ErrorMsg("Error", "Project name is not set");
             $ErrorMsg->render();
             die();
         }
 
-        if (isset($_POST['Table'])) {
-            $Table = $_POST['Table'];
+        if (isset($_POST['data-table'])) {
+            $data_table = $_POST['data-table'];
         }else{
             $ErrorMsg = new ErrorMsg("Error", "Table name is not set");
             $ErrorMsg->render();
@@ -98,28 +100,28 @@ class Edit extends BaseController{
 
         try{
 
-            $BaseSQL = new BaseSQL($ProjectName);
+            $BaseSQL = new BaseSQL($data_projectname);
             
             $BaseSQL->alterTable(
-                $Table,
+                $data_table,
                 'MODIFY COLUMN',
-                $FieldsValue['Name'],
-                $FieldsValue['Type'],
-                $FieldsValue['Length'],
-                $FieldsValue['AI'],
-                $FieldsValue['Default'],
-                $FieldsValue['Pk'],
-                $FieldsValue['Unique'],
-                $FieldsValue['Null'],
+                $FieldsValue['data-name'],
+                $FieldsValue['data-type'],
+                $FieldsValue['data-length'],
+                $FieldsValue['data-ai'],
+                $FieldsValue['data-default'],
+                $FieldsValue['data-pk'],
+                $FieldsValue['data-unique'],
+                $FieldsValue['data-null'],
             );
 
             $BaseSQL->Apply();
 
             if ($BaseSQL->OK()){
-                $SuccessMsg = new SuccessMsg("Success", "Field <b>".$FieldsValue['Name']."</b> has been edited");
+                $SuccessMsg = new SuccessMsg("Success", "Field <b>".$FieldsValue['data-name']."</b> has been edited");
                 $SuccessMsg->render();
             }else{
-                $ErrorMsg = new ErrorMsg("Error", "Field <b>".$FieldsValue['Name']."</b> not edited");
+                $ErrorMsg = new ErrorMsg("Error", "Field <b>".$FieldsValue['data-name']."</b> not edited");
                 $ErrorMsg->render();
             }
 
@@ -139,16 +141,16 @@ class Edit extends BaseController{
         $ProjectName = "";
         $Table = "";
 
-        if (isset($_POST['ProjectName'])) {
-            $ProjectName = $_POST['ProjectName'];
+        if (isset($_POST['data-projectname'])) {
+            $ProjectName = $_POST['data-projectname'];
         }else{
             $ErrorMsg = new ErrorMsg("Error", "Project name is not set");
             $ErrorMsg->render();
             die();
         }
 
-        if (isset($_POST['Table'])) {
-            $Table = $_POST['Table'];
+        if (isset($_POST['data-table'])) {
+            $Table = $_POST['data-table'];
         }else{
             $ErrorMsg = new ErrorMsg("Error", "Table name is not set");
             $ErrorMsg->render();
@@ -156,16 +158,188 @@ class Edit extends BaseController{
         }
 
         $InputAlert = new InputAlert("add_field", "New Field Name");
+        $InputAlert->OnSubmit('AddField(this);');
 
-        $InputAlert->SubmitButton->AddAttribute("Url", $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectObjects&Action=AddField");
-        $InputAlert->SubmitButton->AddAttribute("ProjectName", $ProjectName);
-        $InputAlert->SubmitButton->AddAttribute("Table", $Table);
+        $Data = [
+            'url'   => $Config->get('URL_DASHBOARD')."?Ctrl=Editor/ProjectObjects&Do=Edit&Action=AddField",
+            'projectname'   => $ProjectName,
+            'table'         => $Table,
+        ];
+
+        $InputAlert->Data($Data);
 
         $InputAlert->render();
     }
 
     static function AddField(){
         
+        $data_projectname = "";
+        $data_table = "";
+        $data_field = "";
+
+        if (isset($_POST['data-projectname'])) {
+            $data_projectname = $_POST['data-projectname'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Project name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        if (isset($_POST['data-table'])) {
+            $data_table = $_POST['data-table'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Table name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        if(isset($_POST['data-field'])){
+            $data_field = $_POST['data-field'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Field name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        try{
+            $BaseSQL = new BaseSQL($data_projectname);
+
+            $BaseSQL->alterTable($data_table, "ADD", $data_field, "INTEGER");
+            $BaseSQL->Apply();
+
+            if($BaseSQL->OK()){
+                $NewField = new FieldTrBd($data_projectname, $data_table, 0, $data_field);
+                $NewField->render();
+            }
+
+        } catch (\Exception $e){
+            $ErrorMsg = new ErrorMsg("Error", "Error on create new field");
+            $ErrorMsg->render();
+        }
+    }
+
+    static function ConfirmDeleteField(){
+
+        $Config = new Config();
+
+        $data_projectname = "";
+        $data_table = "";
+        $data_field = "";    
+        $data_idfield = "";
+
+        if (isset($_POST['data-projectname'])) {
+            $data_projectname = $_POST['data-projectname'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Project name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        if (isset($_POST['data-table'])) {
+            $data_table = $_POST['data-table'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Table name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        if(isset($_POST['data-field'])){
+            $data_field = $_POST['data-field'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Field name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        if(isset($_POST['data-idfield'])){
+            $data_idfield = $_POST['data-idfield'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Id Field name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+
+        $ConfirmDelete = new ConfirmDeleteMsg($data_idfield, "Do you want to delete <b>".$data_field."</b> field?");
+        $Data = [
+            'url'           => $Config->get('URL_DASHBOARD')."?Ctrl=Editor/ProjectObjects&Do=Edit&Action=DeleteField",
+            'field'         => $data_field,
+            'projectname'   => $data_projectname,
+            'idfield'       => $data_idfield,
+            'table'         => $data_table,
+        ];
+
+        $ConfirmDelete->Data($Data);
+
+        $ConfirmDelete->OnSubmit("DeleteField(this)");
+        $ConfirmDelete->render();
+
+    }
+
+
+    static function DeleteField(){
+
+        $Config = new Config();
+
+        $data_projectname = "";
+        $data_table = "";
+        $data_field = "";    
+        $data_idfield = "";
+
+        if (isset($_POST['data-projectname'])) {
+            $data_projectname = $_POST['data-projectname'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Project name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        if (isset($_POST['data-table'])) {
+            $data_table = $_POST['data-table'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Table name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        if(isset($_POST['data-field'])){
+            $data_field = $_POST['data-field'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Field name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        if(isset($_POST['data-idfield'])){
+            $data_idfield = $_POST['data-idfield'];
+        }else{
+            $ErrorMsg = new ErrorMsg("Error", "Id Field name is not set");
+            $ErrorMsg->render();
+            die();
+        }
+
+        try{
+            
+            $BaseSQL = new BaseSQL($data_projectname);
+
+            $BaseSQL->alterTable($data_table, "DROP COLUMN", $data_field);
+
+            $BaseSQL->Apply();
+
+            if ($BaseSQL->OK()){
+                $SuccessMsg = new SuccessMsg("Success", "Field deleted");
+                $SuccessMsg->render();
+            }else{
+                $ErrorMsg = new ErrorMsg("Error", "Field not deleted");
+                $ErrorMsg->render();
+            }
+
+
+        } catch (\Exception $e){
+            $ErrorMsg = new ErrorMsg("Error", "Field not deleted<br/>".$e);
+            $ErrorMsg->render();
+        }
+
     }
 
 }

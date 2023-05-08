@@ -1,17 +1,19 @@
 <?php
 namespace Engine\Utils\Widgets;
 
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Div.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Ul.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Label.php";
 require_once("Config.php");
 use Engine\Core\Config;
 $Config = new Config();
+
 require_once $Config->get('FILE_BASEUTILS');
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Li.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\A.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Svg.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\I.php";
+require_once $Config->get('ROOT_HTML')."Li.php";
+require_once $Config->get('ROOT_HTML')."A.php";
+require_once $Config->get('ROOT_HTML')."Svg.php";
+require_once $Config->get('ROOT_HTML')."I.php";
+
+require_once $Config->get('ROOT_HTML')."Div.php";
+require_once $Config->get('ROOT_HTML')."Ul.php";
+require_once $Config->get('ROOT_HTML')."Label.php";
 
 use Core\BaseUtils;
 use Engine\Utils\HTML\Label;

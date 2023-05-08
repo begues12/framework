@@ -1,14 +1,13 @@
-
 function ConfirmDelete(Element){
 
     // Ajax call to delete object
     $.ajax({
-        url: Element.getAttribute("Url")+ "?Ctrl=Editor/ProjectObjects&Do=Index&Action=ConfirmDeleteObject",
+        url: Element.getAttribute("data-url")+ "?Ctrl=Editor/ProjectObjects&Do=Index&Action=ConfirmDeleteObject",
         type: "POST",
         data: { 
-            IdField : Element.getAttribute("IdField"),
-            NameTable : Element.getAttribute("NameTable"),
-            ProjectName : Element.getAttribute("ProjectName")
+            'data-idfield'      : Element.getAttribute("data-idfield"),
+            'data-table'        : Element.getAttribute("data-table"),
+            'data-projectname'  : Element.getAttribute("data-projectname")
         },
         success: function (data) {
             $("body").append(data);
@@ -22,20 +21,20 @@ function ConfirmDelete(Element){
 
 function DeleteObject(Element){
 
-    var IdField = Element.getAttribute("data-idfield");
+    var data_idfield = Element.getAttribute("data-idfield");
 
     $.ajax({
         url: Element.getAttribute("data-url")+ "?Ctrl=Editor/ProjectObjects&Do=Index&Action=DeleteObject",
         type: "POST",
         data: { 
-            NameTable : Element.getAttribute("data-nametable"),
-            ProjectName : Element.getAttribute("data-projectname")
+            'data-tablename'   : Element.getAttribute("data-nametable"),
+            'data-projectname' : Element.getAttribute("data-projectname")
 
         },
         success: function (data) {
             $("body").append(data);
 
-            $("#Tr_Object_"+IdField).remove();
+            $("#Tr_Object_"+data_idfield).remove();
 
         },
         error: function (data) {
@@ -45,16 +44,15 @@ function DeleteObject(Element){
 
 }
 
-function EditObject(FileBox){
+function EditObject(Element){
     $.ajax({
         // Get attributes url
-        url: FileBox.getAttribute('Url'),
+        url: Element.getAttribute('data-url'),
         type: 'POST',
         cache: false,
         data : { 
-            ObjectPath : FileBox.getAttribute('ObjectPath'),
-            ProjectName : FileBox.getAttribute('ProjectName'),
-            Object: FileBox.getAttribute('Object'),
+            'data-table'        : Element.getAttribute('data-table'),
+            'data-projectname'  : Element.getAttribute('data-projectname'),
         },
         success: function (data) {
             NoDisplayPageView();

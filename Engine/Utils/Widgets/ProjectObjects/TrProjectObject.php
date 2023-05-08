@@ -24,7 +24,7 @@ use Engine\Utils\HTML\Option;
 class TrProjectObject extends Tr{
 
     public $Config;
-    public $ObjectName;
+    public $tablename;
     public $ProjectName;
     public $Index;
 
@@ -39,7 +39,7 @@ class TrProjectObject extends Tr{
     public $Button_Edit_Object;
     public $Button_Delete_Object;
 
-    public function __construct($Index, $ObjectName, $ProjectName){
+    public function __construct($Index, $tablename, $ProjectName){
         $this->Config = new Config();
         
         $this->tag = "tr";
@@ -48,7 +48,7 @@ class TrProjectObject extends Tr{
 
         $this->ProjectName = $ProjectName;
         $this->Index = $Index;
-        $this->ObjectName = $ObjectName;
+        $this->tablename = $tablename;
 
         $this->Td_Index_Object = new Td($this->Config);
         $this->Td_Name_Object = new Td($this->Config);
@@ -87,7 +87,7 @@ class TrProjectObject extends Tr{
             'width' => '60%',
         ];
         $this->Label_Name_Object->class = "text-left font-weight-bold";
-        $this->Label_Name_Object->text = $this->ObjectName;
+        $this->Label_Name_Object->text = $this->tablename;
 
         $this->Td_Name_Object->Add($this->Label_Name_Object);
         $this->Add($this->Td_Name_Object);
@@ -95,40 +95,49 @@ class TrProjectObject extends Tr{
 
     private function AddActions(){
 
+
+        // Actions Td
+
         $this->Td_Actions_Object->class = "text-center m-0 p-0 align-middle";
         $this->Td_Actions_Object->css = [
         ];
 
-        $this->Button_Show_Object->class = "btn btn-primary ml-1 material-icons";
-        $this->Button_Show_Object->text = "visibility";
-        $this->Button_Show_Object->onclick = "ShowObject(this);";
-        $this->Button_Show_Object->AddAttribute(
-            "Url", 
-            $this->Config->get('URL_DASHBOARD')."?Ctrl=Editor\ProjectObjects&Do=Show"
-        );
-        $this->Button_Show_Object->AddAttribute("Object", $this->ObjectName);
-        $this->Button_Show_Object->AddAttribute("ProjectName", $this->ProjectName);
 
-        $this->Button_Edit_Object->class = "btn btn-warning ml-1 material-icons";
-        $this->Button_Edit_Object->text = "edit";
-        $this->Button_Edit_Object->onclick = "EditObject(this);";
-        $this->Button_Edit_Object->AddAttribute(
-            "Url", 
-            $this->Config->get('URL_DASHBOARD')."?Ctrl=Editor\ProjectObjects&Do=Edit"
-        );
-        $this->Button_Edit_Object->AddAttribute("Object", $this->ObjectName);
-        $this->Button_Edit_Object->AddAttribute("ProjectName", $this->ProjectName);
+        // Show button
 
-        $this->Button_Delete_Object->class = "btn btn-danger ml-1 material-icons";
-        $this->Button_Delete_Object->text = "delete";
-        $this->Button_Delete_Object->AddAttribute(
-            "Url", 
-            $this->Config->get('URL_DASHBOARD')
-        );
-        $this->Button_Delete_Object->AddAttribute("IdField", $this->Index);
-        $this->Button_Delete_Object->AddAttribute("NameTable", $this->ObjectName);
-        $this->Button_Delete_Object->AddAttribute("ProjectName", $this->ProjectName);
-        $this->Button_Delete_Object->onclick = "ConfirmDelete(this);";
+        $this->Button_Show_Object->class    = "btn text-primary bg-transparent material-icons";
+        $this->Button_Show_Object->css      = [ "font-size" => "24px"];
+        $this->Button_Show_Object->text     = "visibility";
+        $this->Button_Show_Object->onclick  = "ShowObject(this);";
+        $this->Button_Show_Object->AddAttribute( "data-url", $this->Config->get('URL_DASHBOARD')."?Ctrl=Editor\ProjectObjects&Do=Show");
+        $this->Button_Show_Object->AddAttribute('data-mdb-toggle', 'tooltip');
+        $this->Button_Show_Object->AddAttribute('data-title', "<em>Tooltip</em> <u>with</u> <b>HTML</b>");
+        $this->Button_Show_Object->AddAttribute("data-table", $this->tablename);
+        $this->Button_Show_Object->AddAttribute("data-projectname", $this->ProjectName);
+
+
+        // Edit button
+
+        $this->Button_Edit_Object->class    = "btn text-success bg-transparent material-icons";
+        $this->Button_Edit_Object->text     = "edit";
+        $this->Button_Edit_Object->onclick  = "EditObject(this);";
+        $this->Button_Edit_Object->AddAttribute( "data-url", $this->Config->get('URL_DASHBOARD')."?Ctrl=Editor\ProjectObjects&Do=Edit");
+        $this->Button_Edit_Object->AddAttribute("data-table", $this->tablename);
+        $this->Button_Edit_Object->AddAttribute("data-projectname", $this->ProjectName);
+        
+
+        // Delete button
+
+        $this->Button_Delete_Object->class      = "btn text-danger bg-transparent material-icons";
+        $this->Button_Delete_Object->css        = [ "font-size" => "24px"];
+        $this->Button_Delete_Object->text       = "delete";
+        $this->Button_Delete_Object->onclick    = "ConfirmDelete(this);";
+        $this->Button_Delete_Object->AddAttribute( "data-url", $this->Config->get('URL_DASHBOARD'));
+        $this->Button_Delete_Object->AddAttribute("data-idfield", $this->Index);
+        $this->Button_Delete_Object->AddAttribute("data-table", $this->tablename);
+        $this->Button_Delete_Object->AddAttribute("data-projectname", $this->ProjectName);
+
+        // Add buttons
 
         $this->Td_Actions_Object->Add($this->Button_Show_Object);
         $this->Td_Actions_Object->Add($this->Button_Edit_Object);

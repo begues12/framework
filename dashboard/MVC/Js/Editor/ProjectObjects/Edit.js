@@ -36,51 +36,111 @@ $(document).ready(function () {
 });
             
 
-function DeleteField(Element){
+function ConfirmDeleteField(Element){
 
     $.ajax({
         // Get attributes url
-        url: Element.getAttribute('Url') + "?Ctrl=Editor/ProjectObjects&Action=DeleteField",
+        url: Element.getAttribute('data-url'),
         type: 'POST',
         cache: false,
         data : { 
-            'Field' : Element.getAttribute('Field'),
-            'Table' : Element.getAttribute('Table'),
-            'ProjectName' : Element.getAttribute('ProjectName'),
+            'data-field'        : Element.getAttribute('data-field'),
+            'data-table'        : Element.getAttribute('data-table'),
+            'data-projectname'  : Element.getAttribute('data-projectname'),
+            'data-idfield'      : Element.getAttribute('data-idfield'),
         },
         success: function (data) {
             // Add to body
             $('body').append(data);
-
-            var TrDelete = $('#Field_'+Element.getAttribute('Id_Field'));
-            TrDelete.remove();
         }
     });
 
 }
 
-function AddField(Element){
+function DeleteField(Element){
+    $.ajax({
+        // Get attributes url
+        url: Element.getAttribute('data-url'),
+        type: 'POST',
+        cache: false,
+        data : { 
+            'data-field'        : Element.getAttribute('data-field'),
+            'data-table'        : Element.getAttribute('data-table'),
+            'data-projectname'  : Element.getAttribute('data-projectname'),
+            'data-idfield'      : Element.getAttribute('data-idfield'),
+        },
+        success: function (data) {
+            // Add to body
+            var TrDelete = $('#Field_'+Element.getAttribute('data-idfield'));
+            TrDelete.remove();
+
+            $(".alert").each(function(){
+                this.remove();
+            });
+
+            $('body').append(data);
+        }
+    });
+}
+
+function AlertInput_AddField(Element){
 
     $.ajax({
         // Get attributes url
-        url: Element.getAttribute('Url') + "?Ctrl=Editor/ProjectObjects&Do=Edit&Action=AlertInput_AddField",
+        url: Element.getAttribute('data-url') + "?Ctrl=Editor/ProjectObjects&Do=Edit&Action=AlertInput_AddField",
         type: 'POST',
         cache: false,
         data : {
-            'Table' : Element.getAttribute('Table'),
-            'ProjectName' : Element.getAttribute('ProjectName'),
+            'data-table' : Element.getAttribute('data-table'),
+            'data-projectname' : Element.getAttribute('data-projectname'),
         },
         success: function (data) {
             // Add to Body
             $('body').append(data);
+        },
+        error: function (data){
+            alert(data);
         }
     });
+
+}
+
+
+function AddField(Element){
+
+    var Father = Element.getAttribute('father');
+    var input = Element.getAttribute('input');
+
+    $.ajax({
+        // Get attributes url
+        url: Element.getAttribute('data-url'),
+        type: 'POST',
+        cache: false,
+        data : { 
+            'data-projectname' : Element.getAttribute('data-projectname'),
+            'data-field' : $('#'+input).val(),
+            'data-table' : Element.getAttribute('data-table'),
+        },
+        success: function (data) {
+            // Alert close
+            $('#'+Father).remove();
+            NoDisplayPageView($('#PageView_ProjectObjects'));
+            
+            var TrAdd = $('#Table_Fields').find('tbody');
+            TrAdd.append(data);
+
+        },
+        error: function (data) {
+            alert("Ups! Something went wrong");
+        }
+    }); 
+
 
 }
 
 function EditField(Element){
 
-    var IdField = Element.getAttribute('IdField');
+    var IdField = Element.getAttribute('data-idfield');
 
     var Name    = $('#Field_'+IdField+'_Name').val();
     var Type    = $('#Field_'+IdField+'_Type').val();
@@ -106,146 +166,26 @@ function EditField(Element){
 
     $.ajax({
         // Get attributes url
-        url: Element.getAttribute('Url') + "?Ctrl=Editor/ProjectObjects&Do=Edit&Action=EditField",
+        url: Element.getAttribute('data-url') + "?Ctrl=Editor/ProjectObjects&Do=Edit&Action=EditField",
         type: 'POST',
         cache: false,
         data : {
-            'Table'         : Element.getAttribute('Table'),
-            'ProjectName'   : Element.getAttribute('ProjectName'),
-            'Name'          : Name,
-            'Type'          : Type,
-            'Length'        : Length,
-            'AI'            : AI,
-            'Default'       : Default,
-            'Pk'            : Pk,
-            'Unique'        : Unique,
-            'Null'          : Null,
+            'data-table'         : Element.getAttribute('data-table'),
+            'data-projectname'   : Element.getAttribute('data-projectname'),
+            'data-name'          : Name,
+            'data-type'          : Type,
+            'data-length'        : Length,
+            'data-ai'            : AI,
+            'data-default'        : Default,
+            'data-pk'            : Pk,
+            'data-unique'        : Unique,
+            'data-null'          : Null,
         },
         success: function (data) {
             // Add to Body
             $('body').append(data);
         }
     });
-
-}
-
-function AjaxAddField(Element){
-
-    var Father = Element.getAttribute('father');
-    var input = Element.getAttribute('input');
-
-    $.ajax({
-        // Get attributes url
-        url: Element.getAttribute('Url'),
-        type: 'POST',
-        cache: false,
-        data : { 
-            'ProjectName' : Element.getAttribute('ProjectName'),
-            'Field' : $('#'+input).val(),
-            'Table' : Element.getAttribute('Table'),
-        },
-        success: function (data) {
-            // Alert close
-            $('#'+Father).remove();
-            NoDisplayPageView($('#PageView_ProjectObjects'));
-            
-            var TrAdd = $('#Table_Fields').find('tbody');
-            TrAdd.append(data);
-
-        },
-        error: function (data) {
-            alert("Ups! Something went wrong");
-        }
-    }); 
-
-
-}
-
-function UpdateDataField(Element){
-
-    var FormJson = $('#FormObjectEdit').serializeArray();
-    var jsonData = JSON.stringify(FormJson);
-
-    $.ajax({
-        // Get attributes url
-        url: Element.getAttribute('Url') + "?Ctrl=Editor/ProjectObjects&Action=UpdateDataField",
-        type: 'POST',
-        datatype: 'json',
-        cache: false,
-        data : { 
-            // Get Form Data
-            'XML_FILE' : Element.getAttribute('XML_FILE'),
-            'Data' : jsonData,
-        },
-        success: function (data) {
-            NoDisplayPageView($('#PageView_ProjectObjects'));
-        }
-    });
-}
-
-function AddRelation(Element){
-
-}
-
-function AddRelationButton(Element){
-    $.ajax({
-        // Get attributes url
-        url: Element.getAttribute('Url') + "?Ctrl=Editor/ProjectObjects&Do=Edit&Action=AddRelation",
-        type: 'POST',
-        cache: false,
-        data : { 
-            'XML_FILE' : Element.getAttribute('XML_FILE'),
-            'ProjectName' : Element.getAttribute('ProjectName'),
-        },
-        success: function (data) {
-            NoDisplayPageView($('#PageView_ProjectObjects'));
-
-            var TrAdd = $('#Table_Relations');
-            TrAdd.append(data);
-            
-        }
-    });  
-}
-
-function DeleteRelation(Element){
-    $.ajax({
-        // Get attributes url
-        url: Element.getAttribute('Url') + "?Ctrl=Editor/ProjectObjects&Action=DeleteRelation",
-        type: 'POST',
-        cache: false,
-        data : {
-            'XML_FILE' : Element.getAttribute('XML_FILE'),
-            'IdRelation' : Element.getAttribute('Id_Relation'),
-        },
-        success: function (data) {
-            NoDisplayPageView($('#PageView_ProjectObjects'));
-
-            var TrDelete = $('#Relations_Relation_'+Element.getAttribute('Id_Relation'));
-            TrDelete.remove();
-        }
-    });
-
-}
-
-function ChangeRelationFKTable(Element){
-
-    // Activate or disable FK Field option
-    var FKTable = Element.value;
-
-    var Relations_Relation = $('#Relations_Relation_'+Element.getAttribute('data-id')+'_FKField');
-    // alert(Relations_Relation.attr('id'));
-    // display none all options
-    Relations_Relation.find('option').each(function () {
-        $(this).css('display', 'none');
-    });
-
-    // display only options with FKTable value
-    Relations_Relation.find('option').each(function () {
-        if ($(this).attr('fkTable') == FKTable){
-            $(this).css('display', 'block');
-        }
-    });
-
 
 }
 

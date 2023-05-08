@@ -1,5 +1,5 @@
 <?php
-namespace Engine\Utils\Widgets;
+namespace Engine\Utils\Widgets\ProjectObjects;
 
 require_once "Config.php";
 use Engine\Core\Config;
@@ -26,6 +26,7 @@ class FieldTrBd extends Tr{
     public $Config;
     public $ProjectName;
     public $IdField;
+    public $TableName;
 
     public $Name;
     public $Type;
@@ -70,11 +71,12 @@ class FieldTrBd extends Tr{
     public $Button_Save;
     public $Button_Delete;
 
-    function __construct (String $ProjectName, Int $IdField, String $Name)
+    function __construct (String $ProjectName, String $TableName, Int $IdField, String $Name)
     {
         parent::__construct();
 
         $this->Config       = new Config();
+        $this->TableName    = $TableName;
         $this->ProjectName  = $ProjectName;
         $this->IdField      = $IdField;
         $this->Name         = $Name;
@@ -327,29 +329,30 @@ class FieldTrBd extends Tr{
         $this->Td_Field_Actions->class    = "text-center";
 
         $this->Button_Save            = new Button();
-        $this->Button_Save->class     = "btn btn-success material-icons mr-1";
-        $this->Button_Save->css       = [ "font-size" => "20px"];
+        $this->Button_Save->class     = "btn text-success bg-transparent material-icons";
+        $this->Button_Save->css       = [ "font-size" => "24px"];
         $this->Button_Save->text      = "save";
         $this->Button_Save->onclick   = "EditField(this)";
-        $this->Button_Save->AddAttribute("URL", $this->Config->get("URL_DASHBOARD"));
-        $this->Button_Save->AddAttribute("Table", 'users');
-        $this->Button_Save->AddAttribute("Field", $this->name);
-        $this->Button_Save->AddAttribute("ProjectName", $this->ProjectName);
-        $this->Button_Save->AddAttribute("IdField", $this->IdField);
+        $this->Button_Save->AddAttribute("data-url", $this->Config->get("URL_DASHBOARD")."?Ctrl=Editor/ProjectObjects&Do=Edit&Action=EditField");
+        $this->Button_Save->AddAttribute("data-table", $this->TableName);
+        $this->Button_Save->AddAttribute("data-projectname", $this->ProjectName);
+        $this->Button_Save->AddAttribute("data-field", $this->Name);
+        $this->Button_Save->AddAttribute("data-idfield", $this->IdField);
 
         $this->Td_Field_Actions->Add($this->Button_Save);
 
         /* Delete */
     
         $this->Button_Delete          = new Button();
-        $this->Button_Delete->class   = "btn btn-danger material-icons";
-        $this->Button_Delete->css     = [ "font-size" => "20px"];
+        $this->Button_Delete->class   = "btn text-danger bg-transparent material-icons";
+        $this->Button_Delete->css     = [ "font-size" => "24px"];
         $this->Button_Delete->text    = "delete";
-        $this->Button_Delete->onclick = "DeleteField(this)";
-        $this->Button_Delete->AddAttribute("URL", $this->Config->get("URL_DASHBOARD"));
-        $this->Button_Delete->AddAttribute("Table", 'users');
-        $this->Button_Delete->AddAttribute("ProjectName", $this->ProjectName);
-        $this->Button_Delete->AddAttribute("IdField", $this->IdField);
+        $this->Button_Delete->onclick = "ConfirmDeleteField(this)";
+        $this->Button_Delete->AddAttribute("data-url", $this->Config->get("URL_DASHBOARD")."?Ctrl=Editor/ProjectObjects&Do=Edit&Action=ConfirmDeleteField");
+        $this->Button_Delete->AddAttribute("data-table", $this->TableName);
+        $this->Button_Delete->AddAttribute("data-projectname", $this->ProjectName);
+        $this->Button_Delete->AddAttribute("data-field", $this->Name);
+        $this->Button_Delete->AddAttribute("data-idfield", $this->IdField);
     
         $this->Td_Field_Actions->Add($this->Button_Delete);
 

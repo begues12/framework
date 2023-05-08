@@ -21,6 +21,13 @@ class View extends BaseController{
 
     function __construct(){
         parent::__construct();
+
+
+    }
+
+    function Prepare()
+    {
+        
     }
 
 }

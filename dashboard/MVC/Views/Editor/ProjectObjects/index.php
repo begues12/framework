@@ -16,8 +16,9 @@ require_once $Config->get('ROOT_HTML')."Input.php";
 require_once $Config->get('ROOT_HTML')."Table.php";
 require_once $Config->get('ROOT_HTML')."Tr.php";
 require_once $Config->get('ROOT_HTML')."Th.php";
-require_once $Config->get('ROOT_WIDGETS')."ErrorMsg.php";
+require_once $Config->get('ROOT_WIDGETS')."Alerts\ErrorMsg.php";
 require_once $Config->get('ROOT_WIDGETS')."ProjectObjects\TrProjectObject.php";
+require_once $Config->get('ROOT_WIDGETS')."Actionbar.php";
 
 use Engine\Utils\HTML\Button;
 use Engine\Utils\HTML\I;
@@ -27,63 +28,90 @@ use Engine\Utils\HTML\Table;
 use Engine\Utils\HTML\Tr;
 use Engine\Utils\HTML\Th;
 use Engine\Utils\HTML\Input;
-use Engine\Utils\Widgets\ErrorMsg;
+use Engine\Utils\Widgets\Alerts\ErrorMsg;
 use Engine\Utils\Widgets\ProjectObjects\TrProjectObject;
+use Engine\Utils\Widgets\Actionbar;
 
 
 class Index extends BaseView{
 
-    public $ProjectName;
-    public $Tables;
+    public $data_projectname;
+    public $data_tables;
+
+    public $Label_Title;
+    public $Actionbar;
+    public $Button_Add;
+
+    public $Table_Objects;
+    public $Tr_Objects;
+    public $Th_Index_Object;
+    public $Th_Name_Object;
+    public $Th_Actions_Object;
 
     function __construct(){
         parent::__construct();
+        $this->class = "p-2";
+
+        $this->Label_Title          = new Label();
+
+        $this->Actionbar            = new Actionbar();
+        $this->Button_Add           = new Button();
+
+        $this->Table_Objects        = new Table();
+        $this->Tr_Objects           = new Tr();
+        $this->Th_Index_Object      = new Th();
+        $this->Th_Name_Object       = new Th();
+        $this->Th_Actions_Object    = new Th();
     }
 
     public function Prepare()
     {   
 
-        $this->Tables = $this->getVar('Tables');
-        $this->ProjectName = $this->getVar('ProjectName');
+        $this->data_tables       = $this->getVar('data-tables');
+        $this->data_projectname  = $this->getVar('data-projectname');
 
-        $Label_Title = new Label();
-        $Label_Title->class = "form-control-label font-weight-bold h3 border-bottom d-block";
-        $Label_Title->text = "Project Objects";
 
-        $this->Add($Label_Title);
+        $this->SetTitle("Project Objects");
 
-        $Table_Objects = new Table();
-        $Table_Objects->class = "table table-striped table-light table-hover mt-3";
+        $this->Add($this->Label_Title);
 
-        $Tr_Objects = new Tr();
-        $Tr_Objects->class = "thead-light";
+        $this->Button_Add->class    = "btn bg-transparent material-icons";
+        $this->Button_Add->text     = "add";
+        $this->Actionbar->AddElement($this->Button_Add);
 
-        $Th_Index_Object = new Th();
-        $Th_Index_Object->class = "text-center";
-        $Th_Index_Object->text = "#";
+        $this->Add($this->Actionbar);
 
-        $Th_Name_Object = new Th();
-        $Th_Name_Object->class = "text-center";
-        $Th_Name_Object->text = "Nombre";
+        $this->Table_Objects->class = "table table-striped table-light table-hover mt-3 ml-auto mr-auto";
+        $this->Table_Objects->css   = [
+            'max-width' => '50em',
+        ];
 
-        $Th_Actions_Object = new Th();
-        $Th_Actions_Object->class = "text-center";
-        $Th_Actions_Object->text = "Accions";
+        $this->Tr_Objects->class    = "thead-light";
 
-        $Tr_Objects->Add($Th_Index_Object);
-        $Tr_Objects->Add($Th_Name_Object);
-        $Tr_Objects->Add($Th_Actions_Object);
+        $this->Th_Index_Object->class   = "text-center";
+        $this->Th_Index_Object->text    = "#";
 
-        $Table_Objects->Add($Tr_Objects);
+        $this->Th_Name_Object->class    = "text-center";
+        $this->Th_Name_Object->text     = "Nombre";
 
-        foreach ($this->Tables[0]['Rows'] as $key => $table) {
+        $this->Th_Actions_Object->class = "text-center";
+        $this->Th_Actions_Object->text  = "Accions";
+
+        $this->Tr_Objects->Add($this->Th_Index_Object);
+        $this->Tr_Objects->Add($this->Th_Name_Object);
+        $this->Tr_Objects->Add($this->Th_Actions_Object);
+
+        $this->Table_Objects->Add($this->Tr_Objects);
+
+        foreach ($this->data_tables[0]['Rows'] as $key => $table) {
         
-            $ObjectName = $table['Tables_in_'.$this->ProjectName];
-            $TrProjectObject = new TrProjectObject($key, $ObjectName, $this->ProjectName);
-            $Table_Objects->Add($TrProjectObject->Copy());
+            $ObjectName         = $table['Tables_in_'.$this->data_projectname];
+            $TrProjectObject    = new TrProjectObject($key, $ObjectName, $this->data_projectname);
+        
+            $this->Table_Objects->Add($TrProjectObject->Copy());
         }
 
-        $this->Add($Table_Objects);
+        $this->Add($this->Table_Objects);
 
     }
 
