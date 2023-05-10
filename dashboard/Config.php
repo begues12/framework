@@ -20,6 +20,8 @@ class Config{
             'ROOT'          => $this->basePath,
             'CONFIG'        => $this->basePath."/Config.php",
             
+            'BASE_PROJECTS' => "/framework/Projects/",
+
             // URLS
             'URL'           => $this->baseUrl,
             'URL_ENGINE'    => $this->baseUrl."/framework/Engine/",
@@ -33,6 +35,11 @@ class Config{
             'URL_UTILS'     => $this->baseUrl."/framework/Engine/Utils/",
             'URL_HTML'      => $this->baseUrl."/framework/Engine/Utils/HTML/",
             'URL_BASEOBJECT'=> $this->baseUrl."/framework/Engine/Core/BaseObject.php",
+            'URL_BASESQL'   => $this->baseUrl."/framework/Engine/Core/BaseSQL.php",
+            'URL_BASEUTILS' => $this->baseUrl."/framework/Engine/Core/BaseUtils.php",
+            'URL_BASECONTROLLER' => $this->baseUrl."/framework/Engine/Core/BaseController.php",
+            'URL_BASEVIEW'  => $this->baseUrl."/framework/Engine/Core/BaseView.php",
+            'URL_BASEFTP'   => $this->baseUrl."/framework/Engine/Core/BaseFTP.php",
 
             // ROOTS
             'ROOT_DASHBOARD'=> $this->basePath."\Dashboard/",
@@ -46,11 +53,21 @@ class Config{
             'ROOT_CORE'     => $this->basePath."/Engine/Core/",
             'ROOT_OBJECTS'  => $this->basePath."/Engine/Objects/",
             'ROOT_BASEOBJECT' => $this->basePath."/Engine/Core/BaseObject.php",
+            'ROOT_BASESQL'  => $this->basePath."/Engine/Core/BaseSQL.php",
+            'ROOT_BASEUTILS'=> $this->basePath."/Engine/Core/BaseUtils.php",
+            'ROOT_BASECONTROLLER' => $this->basePath."/Engine/Core/BaseController.php",
+            'ROOT_BASEVIEW' => $this->basePath."/Engine/Core/BaseView.php",
+            'ROOT_BASEFTP'  => $this->basePath."/Engine/Core/BaseFTP.php",
 
             // DATABASE
             'DB_HOST'          => 'localhost',
             'DB_USER'          => 'root',
             'DB_PASS'      => '',
+
+            // FTP
+            'FTP_HOST'      => 'localhost',
+            'FTP_USER'      => 'framework',
+            'FTP_PASS'      => '',
 
             // Files
             'FILE_CONFIG'       => $this->basePath."/Config.php",
@@ -59,6 +76,7 @@ class Config{
             'FILE_BASEUTILS'    => $this->basePath."/Engine/Core/BaseUtils.php",
             'FILE_BASECONTROLLER' => $this->basePath."/Engine/Core/BaseController.php",
             'FILE_BASEVIEW'     => $this->basePath."/Engine/Core/BaseView.php",
+            'FILE_BASEFTP'      => $this->basePath."/Engine/Core/BaseFTP.php",
 
 
             ///Files Utils

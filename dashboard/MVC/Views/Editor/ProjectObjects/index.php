@@ -70,18 +70,22 @@ class Index extends BaseView{
         $this->data_tables       = $this->getVar('data-tables');
         $this->data_projectname  = $this->getVar('data-projectname');
 
-
         $this->SetTitle("Project Objects");
 
         $this->Add($this->Label_Title);
 
         $this->Button_Add->class    = "btn bg-transparent material-icons";
         $this->Button_Add->text     = "add";
+        $this->Button_Add->onclick  = "AlertInput_AddTable(this)";
+        $this->Button_Add->AddAttribute("data-url", $this->Config->get('URL_DASHBOARD'));
+        $this->Button_Add->AddAttribute("data-projectname", $this->data_projectname);
+
         $this->Actionbar->AddElement($this->Button_Add);
 
         $this->Add($this->Actionbar);
 
         $this->Table_Objects->class = "table table-striped table-light table-hover mt-3 ml-auto mr-auto";
+        $this->Table_Objects->id = "Table_tables";
         $this->Table_Objects->css   = [
             'max-width' => '50em',
         ];

@@ -44,7 +44,7 @@ class TrProjectObject extends Tr{
         
         $this->tag = "tr";
         $this->id = "Tr_Object_".$Index;
-        $this->class = "text-center";
+        $this->class = "text-center Tr_Object";
 
         $this->ProjectName = $ProjectName;
         $this->Index = $Index;

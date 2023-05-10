@@ -336,8 +336,10 @@ class BaseSQL{
             $query .= "$key $value, ";
         }
         $query = substr($query, 0, -2);
-        $query .= ")";
+        $query .= ");";
         $this->query($query);
+    
+        return $query;
     }
 
     /*

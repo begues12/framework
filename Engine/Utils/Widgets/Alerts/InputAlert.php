@@ -3,6 +3,9 @@
 namespace Engine\Utils\Widgets\Alerts;
 
 require_once "Config.php";
+
+use Core\BaseUtils;
+use Engine\Core\BaseView;
 use Engine\Core\Config;
 
 $Config = new Config();
@@ -37,6 +40,7 @@ class InputAlert extends Div{
 
     public $Container;
     public $CloseButton;
+    public $DivTitle;
     public $Title;
     public $InputDiv;
     public $Input;
@@ -58,20 +62,24 @@ class InputAlert extends Div{
         ];
 
         $this->Container = new Div();
-        $this->Container->class = "bg-light fade show w-50 mx-auto border border-gray rounded p-3";
+        $this->Container->class = "bg-light fade show w-50 mx-auto border border-gray rounded p-3 text-right";
 
         // In center of screen 
         $this->Container->css = [
             "position" => "fixed",
             "top" => "70px",
             "left" => "50%",
-            "transform" => "translate(-50%, -50%)",
+            "transform" => "translate(-50%, -0%)",
             "z-index" => "100000"
         ];
 
         /*
         * This is the title of the alert
         */
+
+        $this->DivTitle = new Div();
+        $this->DivTitle->class = "d-flex text-left";
+
 
         $this->Title = new Label();
         $this->Title->class = "font-weight-bold d-block mb-2";
@@ -83,7 +91,7 @@ class InputAlert extends Div{
         */
 
         $this->InputDiv = new Div();
-        $this->InputDiv->class = "input-group mb-3";
+        $this->InputDiv->class = "mb-3";
 
 
         /*
@@ -114,15 +122,11 @@ class InputAlert extends Div{
 
         $this->SubmitButton = new Button();
         $this->SubmitButton->type = "button";
-        $this->SubmitButton->class = "btn btn-success material-icons";
+        $this->SubmitButton->class = "btn btn-success material-icons ml-auto";
         $this->SubmitButton->text = "check";
         $this->SubmitButton->id = "submit_".$Id;
-        $this->SubmitButton->css = [
-            "border-top-left-radius" => "0",
-            "border-bottom-left-radius" => "0"
-        ];
-        $this->SubmitButton->AddAttribute("father", 'Alert_'.$Id);
-        $this->SubmitButton->AddAttribute("input", $this->Input->id);
+        $this->SubmitButton->AddAttribute("data-father", 'Alert_'.$Id);
+        $this->SubmitButton->AddAttribute("data-input", $this->Input->id);
 
         // Close the alert when the button is clicked
 
@@ -132,12 +136,20 @@ class InputAlert extends Div{
         */
 
         $this->Add($this->Container);    
-        $this->Container->Add($this->Title);
+        $this->DivTitle->Add($this->Title);
+        $this->Container->Add($this->DivTitle);
         $this->Container->Add($this->CloseButton);
         $this->Container->Add($this->InputDiv);
         $this->InputDiv->Add($this->Input);
-        $this->InputDiv->Add($this->SubmitButton);
-        
+        $this->Container->Add($this->SubmitButton);
+    
+        $this->Js("Utils/Widgets/InputAlert.js");
+
+    }
+
+    function AddInput(BaseUtils $Element){
+        $this->InputDiv->Add($Element);
+        $this->Data([$Element->name => $Element->id]);
     }
 
     function OnSubmit(String $action){

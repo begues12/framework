@@ -113,10 +113,9 @@ class Index extends BaseView{
         $Button_Files->class = "btn Sidebar_Button rounded-0";
         $Button_Files->id = "Sidebar_Files";
         $Button_Files->AddAttribute("title", "Files");
-        $Button_Files->AddAttribute("Ctrl", "index");
-        $Button_Files->AddAttribute("ProjectName", $this->ProjectName);
-        $Button_Files->AddAttribute("Url", $this->Config->get('URL_IMPORT_MVC_CALLABLE')."?Ctrl=Editor\ProjectFiles");
-        $Button_Files->AddAttribute("ProjectPath", $this->Config->get('ROOT_PROJECT').$this->ProjectName);
+        $Button_Files->AddAttribute("data-projectname", $this->ProjectName);
+        $Button_Files->AddAttribute("data-url", $this->Config->get('URL_DASHBOARD')."?Ctrl=Editor\ProjectFiles&Do=Index");
+        $Button_Files->AddAttribute("data-projecturl", $this->Config->get('BASE_PROJECTS').$this->ProjectName."/");
 
         $Icono_sidebar = new I();
         $Icono_sidebar->class = "material-icons hover";
@@ -139,6 +138,22 @@ class Index extends BaseView{
 
         $Button_Objects->Add($Icono_sidebar->copy());
         $this->Sidebar->AddElement($Button_Objects);
+
+        // Services button
+        $Button_Services = new Button();
+        $Button_Services->class = "btn Sidebar_Button rounded-0";
+        $Button_Services->id = "Sidebar_Services";
+        $Button_Services->AddAttribute("title", "Project Services");
+        $Button_Services->AddAttribute("data-url", $this->Config->get('URL_DASHBOARD')."?Ctrl=Editor\ProjectsServices&Do=Index");
+        $Button_Services->AddAttribute("data-projectname", $this->ProjectName);
+
+        $Icono_sidebar = new I();
+        $Icono_sidebar->class = "material-icons hover";
+        // Services
+        $Icono_sidebar->text = "build";
+
+        $Button_Services->Add($Icono_sidebar->copy());
+        $this->Sidebar->AddElement($Button_Services);
 
         // Configurations button
         $Button_config = new Button();
