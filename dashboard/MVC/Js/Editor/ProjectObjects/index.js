@@ -1,3 +1,55 @@
+function AlertInput_AddTable(Element){
+
+    // Get count of Tr in table
+    var TrCount = $('.Tr_Object').length;
+
+    $.ajax({
+        // Get attributes url
+        url: Element.getAttribute('data-url') + "?Ctrl=Editor/ProjectObjects&Do=Index&Action=AlertInput_AddTable",
+        type: 'POST',
+        cache: false,
+        data : {
+            'data-projectname'  : Element.getAttribute('data-projectname'),
+            'data-idfield'           : TrCount,
+        },
+        success: function (data) {
+            // Add to Body
+            $('body').append(data);
+        }
+    });
+
+}
+
+function AddTable(Element){
+    
+    var input = Element.getAttribute('data-input');
+    var input_column = Element.getAttribute('data-columnname');
+    var idfield = Element.getAttribute('data-idfield');
+    var Father = Element.getAttribute('data-father');
+
+    $.ajax({
+        // Get attributes url
+        url: Element.getAttribute('data-url') + "?Ctrl=Editor/ProjectObjects&Do=Index&Action=AddTable",
+        type: 'POST',
+        cache: false,
+        data : { 
+            'data-projectname' : Element.getAttribute('data-projectname'),
+            'data-input' : $('#'+input).val(),
+            'data-column-name' : $('#'+input_column).val(),
+            'data-idfield' : idfield,
+        },
+        success: function (data) {
+            $('#'+Father).remove();
+            
+            var TrAdd = $('#Table_tables').find('tbody');
+            TrAdd.append(data);
+        }
+    }); 
+
+
+}
+
+
 function ConfirmDelete(Element){
 
     // Ajax call to delete object

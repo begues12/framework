@@ -1,4 +1,5 @@
 <?php
+namespace MVC\Views\Editor\ProjectFiles;
 
 require_once "Config.php";
 
@@ -10,141 +11,153 @@ require_once $Config->get('ROOT_HTML')."I.php";
 require_once $Config->get('ROOT_HTML')."Div.php";
 require_once $Config->get('ROOT_HTML')."Label.php";
 require_once $Config->get('ROOT_HTML')."Input.php";
+require_once $Config->get('ROOT_WIDGETS')."ProjectFiles/FileBox.php";
+$this->Config->autoload("ROOT_WIDGETS", "Alerts\ErrorMsg");
 
+use Engine\Core\BaseView;
 use Engine\Utils\HTML\Button;
 use Engine\Utils\HTML\I;
 use Engine\Utils\HTML\Div;
 use Engine\Utils\HTML\Label;
 use Engine\Utils\HTML\Input;
+use Engine\Utils\Widgets\Alerts\ErrorMsg;
+use Engine\Utils\Widgets\Navbar;
+use Engine\Utils\Widgets\ProjectFiles\FileBox;
 
-// URL to projects folder
-$url = "";
-if (isset($_POST['ProjectPath'])){
-    $url = $Config->get('ROOT_PROJECTS').$_POST['ProjectPath']."/";
-}
+class Index extends BaseView{
 
-$Div_nav = new Div();
-$Div_nav->class = "m-0 p-0 row text-center";
+    public $data_files;
+    
+    public $data_projectname;
+    public $data_projecturl;
+    public $data_underurl;
+    public $data_redourl;
+    public $HasRedo = false;
+    
+    public $Div_Actionbar;
+    public $Button_UndoUrl;
+    public $Button_RedoUrl;
+    public $Div_Wrapper;
+    public $Input_Url;
+    public $Button_SearchUrl;
 
-$Div_Undo = new Div();
-$Div_Undo->class = "m-0 p-0 col-1 text-center";
+    function __construct(){
+        parent::__construct();
+        $this->class = "p-2";
 
-$Undo_Button = new Button();
-$Undo_Button->class = "btn btn-primary";
-$Undo_Button->onclick = "FileBox(this);";
+        $this->Div_Actionbar    = new Div();
+        $this->Button_UndoUrl   = new Button();
+        $this->Button_RedoUrl   = new Button();
 
-$Undo_url = explode("/", $url);
+        $this->Div_Wrapper      = new Div();
+        $this->Input_Url        = new Input();
+        $this->Button_SearchUrl = new Button();
 
-$Undo_url = array_slice($Undo_url, 0, count($Undo_url)-2);
+    }
 
-$Undo_Button->AddAttribute(
-    "Url", 
-    $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectFiles"
-);
+    public function Prepare()
+    {   
 
-$Undo_Button->AddAttribute("ProjectPath", implode("/", $Undo_url));
+        $this->data_files = $this->getVar('data-files');
 
-$I_Undo = new I();
-$I_Undo->class = "material-icons FileBox";
-$I_Undo->text = "undo";
-$Undo_Button->Add($I_Undo);
+        if (isset($_POST['data-projectname'])){
+            $this->data_projectname = $_POST['data-projectname'];
+        }else{
+            $ErrorMsg = new ErrorMsg('Error', 'Project name not found.');
+            $ErrorMsg->render();
+        }
 
-$Div_Undo->Add($Undo_Button);
+        if (isset($_POST['data-projecturl'])){
+            $this->data_projecturl = $_POST['data-projecturl'];
+        }else{
+            $ErrorMsg = new ErrorMsg('Error', 'Project url not found.');
+            $ErrorMsg->render();
+        }
 
-$Div_Url = new Div();
-$Div_Url->class = "m-0 p-0 col-11";
+        if (isset($_POST['data-redourl'])){
+            $this->data_redourl = $_POST['data-redourl'];
+            $this->HasRedo = true;
+        }
+        
+        $this->data_projecturl = $this->Config->get('ROOT_PROJECTS').$this->data_projectname."/";
+        $this->data_underurl = $this->undoUrl($this->data_projecturl);
 
-$Input_Url = new Input();
-$Input_Url->type = "text";
-$Input_Url->class = "form-control w-100";
-$Input_Url->value = $url;
+        $this->Div_Actionbar->class = "row flex-row w-100 m-0 p-0";
 
-$Div_Url->Add($Input_Url);
+        $this->Button_UndoUrl->type = "button";
+        $this->Button_UndoUrl->class = "btn bg-transparent material-icons d-inline p-2 m-1";
+        $this->Button_UndoUrl->text = "undo";
+        $this->Button_UndoUrl->onclick = "UndoUrl(this);";
+        
+        $this->Div_Actionbar->Add($this->Button_UndoUrl);
 
-$Div_nav->Add($Div_Undo);
-$Div_nav->Add($Div_Url);
+        $this->Button_RedoUrl->type = "button";
+        $this->Button_RedoUrl->class = "btn bg-transparent material-icons d-inline p-2 m-1";
+        $this->Button_RedoUrl->text = "redo";
+        $this->Button_RedoUrl->onclick = "RedoUrl(this);";
 
-$Div_nav->render();
+        if (!$this->HasRedo){
+            $this->Div_Actionbar->Add($this->Button_RedoUrl);
+        }
 
-$Div_grid = new Div();
-$Div_grid->class = "m-0 p-1";
+        $this->Div_Wrapper->class = "input-wrapper d-inline col"; //
 
-if (file_exists($url)){
-
-    $files = scandir($url);
-
-    foreach($files as $file){
-
-        if ($file != "." && $file != ".."){
-
-                $Div = new Div();
-            
-                $Div->class = "border border-dark rounded";
-                $Div->css = [
-                    'width' => '7em',
-                    'height' => '7em',
-                    'margin' => '5px',
-                    'display' => 'inline-block',
-                ];
-
-                $Button = new Button();
-                $Button->type = "button";
-                $Button->onclick = "FileBox(this);";
-
-                if (is_dir($url.$file)){
-
-                    $Button->class = "btn btn-primary";
-                    $Button->AddAttribute(
-                        "Url", 
-                        $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectFiles"
-                    );
-                    $Button->AddAttribute("ProjectPath", $url.$file);
-
-                }else{
-
-                    $Button->class = "btn btn-secondary FileBox";
-                    $Button->AddAttribute(
-                        "Url", 
-                        $Config->get('URL_IMPORT_MVC')."?Ctrl=Editor/ProjectFiles&Do=OpenFile"
-                    );
-                    $Button->AddAttribute("ProjectPath", $url.$file);
-                }
-
-                $Button->css = [
-                    'width' => '100%',
-                    'height' => '100%',
-                    'margin' => '0px',
-                    'padding' => '0px',
-                ];
-
-                $I = new I();
-                $I->class = "material-icons mt-auto mb-auto d-block";
+        $this->Input_Url->type = "text";
+        $this->Input_Url->class = "form-control col pr-4";
+        $this->Input_Url->placeholder = "Enter url";
+        $this->Input_Url->onkeydown = "if (event.keyCode == 13) { InputUrl(this); }";
+        $this->Input_Url->value = $this->data_projecturl;
+        $this->Input_Url->css = [
+            'position' => 'absolute',
+            'top' => '50%',
+            'right' => '10px',
+            'transform' => 'translateY(-50%)',
+            'font-size' => '18px',
+            'color' => 'gray',
+            'cursor' => 'pointer',
+            'white-space' => 'nowrap',
+            'overflow' => 'hidden',
+            'text-overflow' => 'ellipsis',
+        ];
 
 
-                if (is_dir($url.$file)){
-                    $I->text = "folder";
-                }else{
-                    $I->text = "insert_drive_file";
-                }
+        $this->Button_SearchUrl->type = "button";
+        $this->Button_SearchUrl->class = "btn bg-transparent material-icons d-inline p-2 m-0";
+        $this->Button_SearchUrl->text = "search";
+        $this->Button_SearchUrl->onclick = "InputUrl(this);";
+        $this->Button_SearchUrl->css = [
+            'position' => 'absolute',
+            'top' => '50%',
+            'right' => '10px',
+            'transform' => 'translateY(-50%)',
+            'font-size' => '18px',
+            'color' => 'gray',
+            'cursor' => 'pointer',
+        ];
 
-                $Label = new Label();
-                $Label->class = "mt-auto mb-auto";
-                $Label->text = $file;
+        $this->Div_Wrapper->Add($this->Input_Url);
+        $this->Div_Wrapper->Add($this->Button_SearchUrl);
 
-                $Button->Add($I);
-                $Button->Add($Label);
+        $this->Div_Actionbar->Add($this->Div_Wrapper);
 
-                $Div->Add($Button);
+        $this->Add($this->Div_Actionbar);
 
-                $Div_grid->Add($Div);
-
+        foreach($this->data_files as $file){
+            $FileBox = new FileBox($file);
+            $this->Add($FileBox);
         }
 
     }
 
-    $Div_grid->render();
+    private function undoUrl(String $url){
+        $url = explode("/", $url);
+        $url = array_slice($url, 0, count($url)-2);
+        return implode("/", $url);
+    }
+
 
 }
+
 
 
 ?>

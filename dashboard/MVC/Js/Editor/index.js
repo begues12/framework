@@ -27,12 +27,12 @@ $(document).ready(function () {
     $('#Sidebar_Files').on('click', function () {
         $.ajax({
             // Get attributes url
-            url: this.getAttribute('Url'),
+            url: this.getAttribute('data-url'),
             type: 'POST',
             cache: false,
             data : { 
-                ProjectName : this.getAttribute('ProjectName'),
-                ProjectPath : this.getAttribute('ProjectPath')
+                'data-projectname' : this.getAttribute('data-projectname'),
+                'data-projecturl' : this.getAttribute('data-projecturl'),
             },
             success: function (data) {
                 SetColorSidebar_Button($('#Sidebar_Files'));
