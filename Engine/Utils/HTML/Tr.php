@@ -2,7 +2,10 @@
 
 namespace Engine\Utils\HTML;
 
-require_once dirname(__DIR__, 3)."\Engine\Core\BaseUtils.php";
+require_once("Config.php");
+use Engine\Core\Config;
+$Config = new Config();
+require_once $Config->get('FILE_BASEUTILS');
 
 use Core\BaseUtils;
 

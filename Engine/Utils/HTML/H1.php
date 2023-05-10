@@ -1,8 +1,6 @@
 <?php
 namespace Engine\Utils\HTML;
 
-require_once dirname(__DIR__, 3)."\Engine\Core\BaseUtils.php";
-
 use Core\BaseUtils;
 
 class H1 extends BaseUtils{

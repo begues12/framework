@@ -8,51 +8,50 @@
       <Type>int</Type>
       <Length>11</Length>
       <AutoIncrement>1</AutoIncrement>
-      <Required>1</Required>
-      <Default>NULL</Default>
+      <Default></Default>
       <PrimaryKey>1</PrimaryKey>
-      <Unique>1</Unique>
+      <Unique></Unique>
       <Null>1</Null>
     </Field>
     <Field id="2">
       <Name>name</Name>
       <Type>varchar</Type>
-      <Length>50</Length>
-      <AutoIncrement>1</AutoIncrement>
-      <Required>1</Required>
-      <Default>NULL</Default>
-      <Unique>1</Unique>
-      <Null>1</Null>
+      <Length>60</Length>
+      <AutoIncrement>0</AutoIncrement>
+      <Default></Default>
+      <PrimaryKey>0</PrimaryKey>
+      <Unique></Unique>
+      <Null>0</Null>
     </Field>
     <Field id="3">
       <Name>lastname</Name>
       <Type>varchar</Type>
       <Length>50</Length>
-      <AutoIncrement>1</AutoIncrement>
-      <Required>1</Required>
-      <Default>NULL</Default>
-      <Unique>1</Unique>
-      <Null>1</Null>
+      <AutoIncrement>0</AutoIncrement>
+      <Default></Default>
+      <PrimaryKey>0</PrimaryKey>
+      <Unique></Unique>
+      <Null>0</Null>
     </Field>
     <Field id="4">
       <Name>email</Name>
       <Type>varchar</Type>
       <Length>50</Length>
-      <AutoIncrement>1</AutoIncrement>
-      <Required>1</Required>
-      <Default>NULL</Default>
-      <Unique>1</Unique>
-      <Null>1</Null>
+      <AutoIncrement>0</AutoIncrement>
+      <Default></Default>
+      <PrimaryKey>0</PrimaryKey>
+      <Unique></Unique>
+      <Null>0</Null>
     </Field>
     <Field id="5">
       <Name>password</Name>
       <Type>varchar</Type>
       <Length>50</Length>
-      <AutoIncrement>1</AutoIncrement>
-      <Required>1</Required>
-      <Default>NULL</Default>
-      <Unique>1</Unique>
-      <Null>1</Null>
+      <AutoIncrement>0</AutoIncrement>
+      <Default></Default>
+      <PrimaryKey>0</PrimaryKey>
+      <Unique></Unique>
+      <Null>0</Null>
     </Field>
   </Fields>
   <Relations>
@@ -69,7 +68,7 @@
       <FKField>4</FKField>
     </Relation>
     <Relation id="3">
-      <Field>4</Field>
+      <Field>1</Field>
       <Type>OneToOne</Type>
       <FKTable>Transfers</FKTable>
       <FKField>5</FKField>

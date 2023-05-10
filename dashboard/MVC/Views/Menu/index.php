@@ -1,4 +1,5 @@
 <?php
+
 require_once $Config->get('ROOT_HTML')."Div.php";
 require_once $Config->get('ROOT_HTML')."H1.php";
 require_once $Config->get('ROOT_HTML')."P.php";

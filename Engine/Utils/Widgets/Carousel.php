@@ -2,13 +2,17 @@
 
 namespace Engine\Utils\Widgets;
 
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Div.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Img.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Li.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Ol.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\A.php";
-require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\Span.php";
-require_once dirname(__DIR__, 3)."\Engine\Core\BaseUtils.php";
+require_once("Config.php");
+use Engine\Core\Config;
+$Config = new Config();
+
+require_once $Config->get('FILE_BASEUTILS');
+require_once $Config->get('ROOT_HTML')."Div.php";
+require_once $Config->get('ROOT_HTML')."Img.php";
+require_once $Config->get('ROOT_HTML')."Li.php";
+require_once $Config->get('ROOT_HTML')."Ol.php";
+require_once $Config->get('ROOT_HTML')."A.php";
+require_once $Config->get('ROOT_HTML')."Span.php";
 
 use Engine\Utils\HTML\Div;
 use Core\BaseUtils;
