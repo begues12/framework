@@ -15,6 +15,7 @@ require_once($Config->get('ROOT_WIDGETS')."Alerts\ConfirmDeleteMsg.php");
 require_once($Config->get('ROOT_WIDGETS')."Alerts\SuccessMsg.php");
 require_once $Config->get('ROOT_WIDGETS')."Alerts\InputAlert.php";
 require_once $Config->get('ROOT_WIDGETS')."ProjectObjects/FieldTrBd.php";
+require_once $Config->get('FILE_BASEFTP');
 
 use Engine\Core\BaseSQL;
 use Engine\Core\BaseController;
@@ -24,54 +25,51 @@ use Engine\Utils\Widgets\Alerts\ErrorMsg;
 use Engine\Utils\Widgets\Alerts\SuccessMsg;
 use Engine\Utils\Widgets\Alerts\InputAlert;
 use Engine\Utils\Widgets\ProjectObjects\FieldTrBd;
+
 use Error;
 use Exception;
 
-class OpenFile extends BaseController{
+class OpenFolder extends BaseController{
 
-    public $data_filePath;
-    public $data_absolutefilepath;
+    public $data_projectname;
+    public $data_projecturl;
     
     public $list_files = array();
 
     function __construct(){
         parent::__construct();
-        $this->data_filePath = "";
-        $this->data_absolutefilepath = "";
-
-          // Search Files
-          if (isset($_POST['data-filePath'])){
-            $this->data_filePath = $_POST['data-filePath'];
-        }else{
-            $ErrorMsg = new ErrorMsg('Error', 'File path not found');
-            $ErrorMsg->render();
-            die();
-        }
-
-        // Search Files
-        if (isset($_POST['data-absolutepath'])){
-            $this->data_absolutefilepath = $_POST['data-absolutepath'];
-        }else{
-            $ErrorMsg = new ErrorMsg('Error', 'Absolute file path not found');
-            $ErrorMsg->render();
-            die();
-        }
     }
 
     public function Prepare()
     {
 
-        // Search in URL for the project name
-        if(file_exists($this->data_absolutefilepath)){
-            $fileContent = \file_get_contents($this->data_absolutefilepath);
-        } else{
-            $ErrorMsg = new ErrorMsg('Error', 'File not found '.$this->data_absolutefilepath);
+        $this->data_projecturl = "";
+        $this->data_projectname = "";
+
+        if (isset($_POST['data-projectname'])){
+            $this->data_projectname = $_POST['data-projectname'];
+        }else{
+            $ErrorMsg = new ErrorMsg('Error', 'Project name not found');
             $ErrorMsg->render();
             die();
         }
 
-        $this->setVar('data-file', $fileContent);
+        // Search Files
+        if (isset($_POST['data-projecturl'])){
+            $this->data_projecturl = $_POST['data-projecturl'];
+        }else{
+            $ErrorMsg = new ErrorMsg('Error', 'Project URL not found');
+            $ErrorMsg->render();
+            die();
+        }
 
+        // Search in URL for the project name
+
+        $BaseFTP = new BaseFTP();
+        $this->list_files = $BaseFTP->listFiles($this->data_projecturl);
+
+        $this->setVar('data-files', $this->list_files);
+        
     }
 
 }

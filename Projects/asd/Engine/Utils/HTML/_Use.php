@@ -8,17 +8,22 @@ require_once $Config->get('FILE_BASEUTILS');
 
 use Core\BaseUtils;
 
-class A extends BaseUtils{
+class _Use extends BaseUtils{
 
     function __construct(){
-        $this->tag = "a";
+        $this->tag = "use";
         $this->name = "";
-        $this->value = "";
-        $this->text = "";
         $this->class = "";
         $this->id = "";
         $this->css = [];
         $this->attributes = [];
+        $xlink_href = "";
+
+        $this->attributes["xlink:href"] = $xlink_href;
+    }
+
+    function AddElement($element){
+        $this->text .= $element;
     }
 
 }

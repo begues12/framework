@@ -8,10 +8,10 @@ require_once $Config->get('FILE_BASEUTILS');
 
 use Core\BaseUtils;
 
-class A extends BaseUtils{
+class OtherElement extends BaseUtils{
 
-    function __construct(){
-        $this->tag = "a";
+    function __construct(String $tag){
+        $this->tag = $tag;
         $this->name = "";
         $this->value = "";
         $this->text = "";

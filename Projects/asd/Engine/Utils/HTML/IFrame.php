@@ -8,12 +8,13 @@ require_once $Config->get('FILE_BASEUTILS');
 
 use Core\BaseUtils;
 
-class A extends BaseUtils{
+class IFrame extends BaseUtils{
 
     function __construct(){
-        $this->tag = "a";
+        $this->tag = "iframe";
         $this->name = "";
         $this->value = "";
+        $this->src = "";
         $this->text = "";
         $this->class = "";
         $this->id = "";

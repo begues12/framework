@@ -8,13 +8,13 @@ require_once $Config->get('FILE_BASEUTILS');
 
 use Core\BaseUtils;
 
-class A extends BaseUtils{
+class Select extends BaseUtils{
 
     function __construct(){
-        $this->tag = "a";
+        $this->tag = "select";
         $this->name = "";
         $this->value = "";
-        $this->text = "";
+        $this->content = [];
         $this->class = "";
         $this->id = "";
         $this->css = [];
@@ -22,15 +22,4 @@ class A extends BaseUtils{
     }
 
 }
-
-####################
-#        ,~~~.     #
-#       (\___/)    #
-#       /_O_O_\    #
-#      {=^___^=}   #
-#       \_/ \_/    #
-#__________________#
-# Github:@Begues12 #
-####################
-
 ?>

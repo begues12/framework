@@ -5,21 +5,36 @@ require_once("Config.php");
 use Engine\Core\Config;
 $Config = new Config();
 require_once $Config->get('FILE_BASEUTILS');
+require_once dirname(__DIR__, 3)."\Engine\Utils\HTML\OtherElement.php";
 
 use Core\BaseUtils;
+use Engine\Utils\HTML\OtherElement;
 
-class A extends BaseUtils{
+class svg extends BaseUtils{
+    
+    public $Use;
 
     function __construct(){
-        $this->tag = "a";
+        $this->tag = "svg";
         $this->name = "";
         $this->value = "";
-        $this->text = "";
         $this->class = "";
         $this->id = "";
         $this->css = [];
-        $this->attributes = [];
+        $this->attributes = [
+            'width' => '24',
+            'height' => '24',
+            'role' => 'img',
+            'aria-label' => 'Home',
+        ];
     }
+
+    function AddUse(String $href){
+        $this->Use = new OtherElement("use");
+        $this->Use->AddAttribute("xlink:href", $href);
+        $this->Add($this->Use);
+    }
+
 
 }
 

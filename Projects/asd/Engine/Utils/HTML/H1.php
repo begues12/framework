@@ -1,17 +1,12 @@
 <?php
 namespace Engine\Utils\HTML;
 
-require_once("Config.php");
-use Engine\Core\Config;
-$Config = new Config();
-require_once $Config->get('FILE_BASEUTILS');
-
 use Core\BaseUtils;
 
-class A extends BaseUtils{
+class H1 extends BaseUtils{
 
     function __construct(){
-        $this->tag = "a";
+        $this->tag = "h1";
         $this->name = "";
         $this->value = "";
         $this->text = "";

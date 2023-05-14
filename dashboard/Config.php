@@ -7,6 +7,7 @@ class Config{
     public $config = [];
     public $baseUrl;
     public $basePath;
+    public $base;
     public $get = [];
     public $post = [];
     public $request = [];
@@ -15,12 +16,14 @@ class Config{
 
         $this->baseUrl = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST'];
         $this->basePath = dirname(__DIR__, 1);
+        $this->base     = dirname(__DIR__, 2);
 
         $this->config = [
             'ROOT'          => $this->basePath,
+            'ROOT_FILES'    => $this->basePath,
             'CONFIG'        => $this->basePath."/Config.php",
             
-            'BASE_PROJECTS' => "/framework/Projects/",
+            'BASE_PROJECTS' => "framework/Projects/",
 
             // URLS
             'URL'           => $this->baseUrl,
@@ -40,6 +43,7 @@ class Config{
             'URL_BASECONTROLLER' => $this->baseUrl."/framework/Engine/Core/BaseController.php",
             'URL_BASEVIEW'  => $this->baseUrl."/framework/Engine/Core/BaseView.php",
             'URL_BASEFTP'   => $this->baseUrl."/framework/Engine/Core/BaseFTP.php",
+            "URL_PLUGINS"   => $this->baseUrl."/framework/Engine/Plugins/",
 
             // ROOTS
             'ROOT_DASHBOARD'=> $this->basePath."\Dashboard/",
@@ -58,6 +62,7 @@ class Config{
             'ROOT_BASECONTROLLER' => $this->basePath."/Engine/Core/BaseController.php",
             'ROOT_BASEVIEW' => $this->basePath."/Engine/Core/BaseView.php",
             'ROOT_BASEFTP'  => $this->basePath."/Engine/Core/BaseFTP.php",
+            'ROOT_PLUGINS'  => $this->basePath."/Engine/Plugins/",
 
             // DATABASE
             'DB_HOST'          => 'localhost',

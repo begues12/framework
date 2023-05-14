@@ -58,6 +58,8 @@ function ConfirmDeleteField(Element){
 }
 
 function DeleteField(Element){
+    $('#LoadSpinner').css('display', 'block');
+
     $.ajax({
         // Get attributes url
         url: Element.getAttribute('data-url'),
@@ -79,6 +81,8 @@ function DeleteField(Element){
             });
 
             $('body').append(data);
+
+            $('#LoadSpinner').css('display', 'none');
         }
     });
 }
@@ -107,6 +111,7 @@ function AlertInput_AddField(Element){
 
 
 function AddField(Element){
+    $('#LoadSpinner').css('display', 'block');
 
     var Father = Element.getAttribute('father');
     var input = Element.getAttribute('input');
@@ -128,6 +133,7 @@ function AddField(Element){
             
             var TrAdd = $('#Table_Fields').find('tbody');
             TrAdd.append(data);
+            $('#LoadSpinner').css('display', 'none');
 
         },
         error: function (data) {
@@ -139,6 +145,7 @@ function AddField(Element){
 }
 
 function EditField(Element){
+    $('#LoadSpinner').css('display', 'block');
 
     var IdField = Element.getAttribute('data-idfield');
 
@@ -184,6 +191,7 @@ function EditField(Element){
         success: function (data) {
             // Add to Body
             $('body').append(data);
+            $('#LoadSpinner').css('display', 'none');
         }
     });
 

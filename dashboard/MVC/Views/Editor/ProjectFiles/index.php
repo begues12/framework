@@ -16,12 +16,9 @@ $this->Config->autoload("ROOT_WIDGETS", "Alerts\ErrorMsg");
 
 use Engine\Core\BaseView;
 use Engine\Utils\HTML\Button;
-use Engine\Utils\HTML\I;
 use Engine\Utils\HTML\Div;
-use Engine\Utils\HTML\Label;
 use Engine\Utils\HTML\Input;
 use Engine\Utils\Widgets\Alerts\ErrorMsg;
-use Engine\Utils\Widgets\Navbar;
 use Engine\Utils\Widgets\ProjectFiles\FileBox;
 
 class Index extends BaseView{
@@ -40,6 +37,8 @@ class Index extends BaseView{
     public $Div_Wrapper;
     public $Input_Url;
     public $Button_SearchUrl;
+    public $Div_ShowFiles;
+    public $Div_OpenFile;
 
     function __construct(){
         parent::__construct();
@@ -53,6 +52,8 @@ class Index extends BaseView{
         $this->Input_Url        = new Input();
         $this->Button_SearchUrl = new Button();
 
+        $this->Div_ShowFiles        = new Div();
+        $this->Div_OpenFile         = new Div();
     }
 
     public function Prepare()
@@ -104,6 +105,7 @@ class Index extends BaseView{
 
         $this->Input_Url->type = "text";
         $this->Input_Url->class = "form-control col pr-4";
+        $this->Input_Url->id = "InputUrl";
         $this->Input_Url->placeholder = "Enter url";
         $this->Input_Url->onkeydown = "if (event.keyCode == 13) { InputUrl(this); }";
         $this->Input_Url->value = $this->data_projecturl;
@@ -142,10 +144,28 @@ class Index extends BaseView{
 
         $this->Add($this->Div_Actionbar);
 
-        foreach($this->data_files as $file){
-            $FileBox = new FileBox($file);
-            $this->Add($FileBox);
+        $this->Div_ShowFiles->class = "container-grid m-0 p-0 FileView";
+        $this->Div_ShowFiles->id    = "FileView_ShowFiles";
+
+        $this->Div_OpenFile->class = "m-0 p-0 FileView";
+        $this->Div_OpenFile->id    = "FileView_OpenFile";
+
+        if (isset($this->data_files['dir'])){
+            foreach($this->data_files['dir'] as $file){
+                $FileBox = new FileBox('dir', $file, $this->data_projectname);
+                $this->Div_ShowFiles->Add($FileBox);
+            }
         }
+        
+        if (isset($this->data_files['file'])){
+            foreach($this->data_files['file'] as $file){
+                $FileBox = new FileBox('file', $file, $this->data_projectname);
+                $this->Div_ShowFiles->Add($FileBox);
+            }
+        }
+
+        $this->Add($this->Div_ShowFiles);
+        $this->Add($this->Div_OpenFile);
 
     }
 

@@ -15,6 +15,7 @@ require_once($Config->get('ROOT_WIDGETS')."Alerts\ConfirmDeleteMsg.php");
 require_once($Config->get('ROOT_WIDGETS')."Alerts\SuccessMsg.php");
 require_once $Config->get('ROOT_WIDGETS')."Alerts\InputAlert.php";
 require_once $Config->get('ROOT_WIDGETS')."ProjectObjects/FieldTrBd.php";
+require_once $Config->get('FILE_BASEFTP');
 
 use Engine\Core\BaseSQL;
 use Engine\Core\BaseController;
@@ -24,6 +25,7 @@ use Engine\Utils\Widgets\Alerts\ErrorMsg;
 use Engine\Utils\Widgets\Alerts\SuccessMsg;
 use Engine\Utils\Widgets\Alerts\InputAlert;
 use Engine\Utils\Widgets\ProjectObjects\FieldTrBd;
+
 use Error;
 use Exception;
 
@@ -64,11 +66,7 @@ class Index extends BaseController{
         // Search in URL for the project name
 
         $BaseFTP = new BaseFTP();
-        $ScanDir = $BaseFTP->listFiles($this->data_projecturl);
-
-        foreach ($ScanDir as $key => $value) {
-            $this->list_files[] = $value;
-        }
+        $this->list_files = $BaseFTP->listFiles($this->data_projecturl);
 
         $this->setVar('data-files', $this->list_files);
         

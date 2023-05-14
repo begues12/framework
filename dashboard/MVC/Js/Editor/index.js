@@ -2,6 +2,8 @@
 $(document).ready(function () {
 
     $('#Sidebar_PageView').on('click', function () {
+        $('#LoadSpinner').css('display', 'block');
+
         $.ajax({
             // Get attributes url
             url: this.getAttribute('Url'),
@@ -15,6 +17,7 @@ $(document).ready(function () {
                 NoDisplayPageView();
                 $('#PageView_IFrame').contents().find('body').html(data);
                 $('#PageView_IFrame').css('display', 'block');
+                $('#LoadSpinner').css('display', 'none');
             }
         });
     });
@@ -25,6 +28,8 @@ $(document).ready(function () {
 
     // Sidebar_Files
     $('#Sidebar_Files').on('click', function () {
+        $('#LoadSpinner').css('display', 'block');
+
         $.ajax({
             // Get attributes url
             url: this.getAttribute('data-url'),
@@ -39,12 +44,16 @@ $(document).ready(function () {
                 NoDisplayPageView();
                 $('#PageView_ProjectFiles').html(data);
                 $('#PageView_ProjectFiles').css( 'display', 'block');
+                $('#LoadSpinner').css('display', 'none');
+
             }
         });
 
     });
 
     $('#Sidebar_Config').on('click', function () {
+        $('#LoadSpinner').css('display', 'block');
+
         $.ajax({
             // Get attributes url
             url: this.getAttribute('Url'),
@@ -59,6 +68,7 @@ $(document).ready(function () {
                 NoDisplayPageView();
                 $('#PageView_ProjectConfig').html(data);
                 $('#PageView_ProjectConfig').css( 'display', 'block');
+                $('#LoadSpinner').css('display', 'none');
             }
         });
 
@@ -68,6 +78,8 @@ $(document).ready(function () {
 
 
 function LoadProjectObject(Element){
+    $('#LoadSpinner').css('display', 'block');
+
     $.ajax({
         // Get attributes url
         url: Element.getAttribute('data-url'),
@@ -81,29 +93,14 @@ function LoadProjectObject(Element){
             NoDisplayPageView();
             $('#PageView_ProjectObjects').html(data);
             $('#PageView_ProjectObjects').css('display', 'block');
+            $('#LoadSpinner').css('display', 'none');
         }
     });
 }
 
-function FileBox(FileBox){
-    $.ajax({
-        // Get attributes url
-        url: FileBox.getAttribute('Url'),
-        type: 'POST',
-        cache: false,
-        data : { 
-            ProjectName : FileBox.getAttribute('ProjectName'),
-            ProjectPath : FileBox.getAttribute('ProjectPath'),
-        },
-        success: function (data) {
-            NoDisplayPageView();
-            $('#PageView_ProjectFiles').html(data);
-            $('#PageView_ProjectFiles').css('display', 'block');
-        }
-    });
-}
 
 function AddObject(Element){
+    $('#LoadSpinner').css('display', 'block');
     $.ajax({
         // Get attributes url
         url: Element.getAttribute('Url'),
@@ -118,6 +115,7 @@ function AddObject(Element){
             NoDisplayPageView();
             $('#PageView_ProjectObjects').html(data);
             $('#PageView_ProjectObjects').css('display', 'block');
+            $('#LoadSpinner').css('display', 'none');
         }
     });
 }

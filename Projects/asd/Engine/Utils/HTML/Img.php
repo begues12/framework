@@ -8,29 +8,20 @@ require_once $Config->get('FILE_BASEUTILS');
 
 use Core\BaseUtils;
 
-class A extends BaseUtils{
+class Img extends BaseUtils{
 
     function __construct(){
-        $this->tag = "a";
+        $this->tag = "img";
         $this->name = "";
         $this->value = "";
-        $this->text = "";
+        $this->content = [];
         $this->class = "";
         $this->id = "";
         $this->css = [];
         $this->attributes = [];
+        $this->src = "";
+        $this->alt = "";
+        
     }
 
 }
-
-####################
-#        ,~~~.     #
-#       (\___/)    #
-#       /_O_O_\    #
-#      {=^___^=}   #
-#       \_/ \_/    #
-#__________________#
-# Github:@Begues12 #
-####################
-
-?>

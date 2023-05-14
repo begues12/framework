@@ -8,10 +8,10 @@ require_once $Config->get('FILE_BASEUTILS');
 
 use Core\BaseUtils;
 
-class A extends BaseUtils{
+class I extends BaseUtils{
 
     function __construct(){
-        $this->tag = "a";
+        $this->tag = "i";
         $this->name = "";
         $this->value = "";
         $this->text = "";
